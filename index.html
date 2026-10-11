@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>V Land – Bangladesh 3D Map</title>
+  <link rel="icon" href="/logo.png" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <header id="top">
+    <img src="/logo.png" alt="V Land" id="logo" />
+    <nav id="crumbs"></nav>
+  </header>
+
+  <div id="tip"></div>
+  <div id="loading"><div class="spin"></div><span id="loadtxt">Loading 3D map…</span></div>
+  <div id="msg"></div>
+
+  <aside id="tools">
+    <button id="home" title="Home">⌂</button>
+    <button id="back" title="Back">←</button>
+    <hr />
+    <button data-act="rotL" title="Rotate left">⟲</button>
+    <button data-act="rotR" title="Rotate right">⟳</button>
+    <button data-act="tiltU" title="Tilt up">⤒</button>
+    <button data-act="tiltD" title="Tilt down">⤓</button>
+    <hr />
+    <button data-act="panL" title="Move left">◀</button>
+    <button data-act="panR" title="Move right">▶</button>
+    <button data-act="panU" title="Move up">▲</button>
+    <button data-act="panD" title="Move down">▼</button>
+    <hr />
+    <button data-act="zoomIn" title="Zoom in">＋</button>
+    <button data-act="zoomOut" title="Zoom out">－</button>
+    <button data-act="reset" title="Reset view">◎</button>
+  </aside>
+
+  <section id="mapview" hidden>
+    <div class="maphead">
+      <button id="closemap">← Back to 3D map</button>
+      <span id="maptitle"></span>
+      <a id="openg" target="_blank" rel="noopener">Open in Google Maps ↗</a>
+    </div>
+    <iframe id="gmap" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+  </section>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
