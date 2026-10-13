@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import * as Blood from './blood.js';
+import BN_LIST, { EN_FIX } from './names-bn.js';
 
 /* ------------------------------------------------------------------ *
  * MODEL NAMING RULE (Blender object names, separator = two underscores)
@@ -10,6 +12,20 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
  *   areas.glb      -> Dhaka__Dhaka__Mohammadpur   (Division__District__Area)
  * ------------------------------------------------------------------ */
 const SEP = '__';
+// ---------- language (Bangla / English) ----------
+const norm = (s) => s.toLowerCase().replace(/[^a-z]/g, '');
+const BN = {}; BN_LIST.forEach(([bn, ...en]) => en.forEach((e) => (BN[norm(e)] = bn)));
+let lang = 'bn';                                  // default language: 'bn' or 'en'
+try { lang = localStorage.getItem('lang') || 'bn'; } catch (e) {}
+const missingBn = new Set(); window.__missingBn = () => [...missingBn];
+const tr = (name) => {
+  const clean = name.replace(/\s+\d+$/, '');
+  if (lang !== 'bn') return (EN_FIX && EN_FIX[clean]) || clean;
+  const b = BN[norm(clean)];
+  if (!b) missingBn.add(clean);
+  return b || clean;
+};
+
 const FILES = {
   1: '/models/divisions.glb',
   2: '/models/districts.glb',
@@ -47,6 +63,7 @@ let path = [];               // ["Dhaka","Gazipur"] etc.
 let shown = [];              // currently interactive meshes
 let hovered = null;
 let busy = false;
+let preloading = true;
 const home = { pos: new THREE.Vector3(), target: new THREE.Vector3() };
 
 const $ = (id) => document.getElementById(id);
@@ -56,32 +73,72 @@ const lastOf = (m) => partsOf(m).slice(-1)[0];
 function toast(t, ms = 3500) { const m = $('msg'); m.textContent = t; m.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => (m.style.display = 'none'), ms); }
 
 // ---------- loading ----------
-async function loadLevel(l) {
+const pending = {};
+function loadLevel(l, quiet = false) {
+  if (cache[l]) return Promise.resolve(cache[l]);
+  if (!pending[l]) {
+    pending[l] = loadLevelNow(l, quiet).then((r) => { if (!r) delete pending[l]; return r; });
+  } else if (!quiet) {
+    $('loadtxt').textContent = 'Loading map…';
+    $('loading').classList.remove('hide');
+    pending[l].then(() => $('loading').classList.add('hide'));
+  }
+  return pending[l];
+}
+async function loadLevelNow(l, quiet) {
   if (cache[l]) return cache[l];
-  $('loadtxt').textContent = `Loading ${LEVEL_NAME[l + 1] || ''} map…`;
-  $('loading').classList.remove('hide');
+  if (!quiet) {
+    $('loadtxt').textContent = `Loading ${LEVEL_NAME[l + 1] || ''} map…`;
+    $('loading').classList.remove('hide');
+  }
   try {
     const gltf = await loader.loadAsync(FILES[l]);
     const root = gltf.scene;
     root.traverse((o) => {
-      if (o.isMesh) {
+      if (o.isMesh && !o.isLineSegments2) {
         o.material = o.material.clone();           // own material = own highlight
         if (l > 1) tint(o);
         o.userData.base = o.material.color.clone();
+        if (l === 1) {                       // stack divisions in fixed order so overlapping tops never tie
+          const ORDER = ['dhaka','chittagong','khulna','rangpur','rajshahi','sylhet','barisal','mymensingh'];
+          const k = ORDER.indexOf(lastOf(o).toLowerCase());
+          o.position.y += 0.004 * (k < 0 ? 4 : k);
+        }
         o.userData.baseY = o.position.y;
         addOutline(o, l);
         o.visible = false;
       }
     });
+    if (l > 1) {                           // separate overlapping pieces by real height (greedy layering)
+      root.updateMatrixWorld(true);
+      const ms = meshesOf(root).map((o) => ({ o, b: new THREE.Box3().setFromObject(o) }));
+      const area = (b) => (b.max.x - b.min.x) * (b.max.z - b.min.z);
+      ms.sort((a, b) => area(b.b) - area(a.b));
+      let maxC = 0;
+      ms.forEach((m, i) => {
+        const used = new Set();
+        for (let j = 0; j < i; j++) {
+          const n = ms[j].b;
+          if (m.b.min.x < n.max.x && m.b.max.x > n.min.x && m.b.min.z < n.max.z && m.b.max.z > n.min.z) used.add(ms[j].c);
+        }
+        let c = 0; while (used.has(c)) c++;
+        m.c = c; maxC = Math.max(maxC, c);
+      });
+      const thick = ms.length ? ms[0].b.max.y - ms[0].b.min.y : 1;
+      const eps = Math.min(thick * 0.006, (thick * 0.12) / Math.max(1, maxC));
+      ms.forEach((m) => { m.o.position.y += eps * m.c; m.o.userData.baseY = m.o.position.y; });
+      console.log('layers', l, maxC + 1, 'eps', eps);
+    }
     scene.add(root);
     cache[l] = root;
+    if (l === 1) Blood.setMap(root);
     return root;
   } catch (e) {
     console.error(e);
-    toast(`Could not load ${FILES[l]} – check the file exists in public/models/`, 7000);
+    toast(`Could not load ${FILES[l]} – check the file exists in public/models/ (${e && e.message})`, 7000);
     return null;
   } finally {
-    $('loading').classList.add('hide');
+    if (!quiet) $('loading').classList.add('hide');
   }
 }
 
@@ -94,11 +151,8 @@ function tint(o) {                                  // give every district / are
     Math.min(0.85, Math.max(0.2, hsl.s + (c - 0.5) * 0.25)),
     Math.min(0.68, Math.max(0.2, hsl.l + (a - 0.5) * 0.32)));
 }
-function addOutline(o, l) {                         // light outline around every piece
-  const line = new THREE.LineSegments(
-    new THREE.EdgesGeometry(o.geometry, 25),
-    new THREE.LineBasicMaterial({ color: 0xf4fff7, transparent: true, opacity: l === 1 ? 0.35 : 0.85 }));
-  line.userData.baseOpacity = line.material.opacity;
+function addOutline(o, l) {                         // thick border line (blood vein) around every piece
+  const line = Blood.makeLine(o.geometry, l);
   o.add(line); o.userData.line = line;
 }
 function setAlpha(m, a) {
@@ -106,7 +160,7 @@ function setAlpha(m, a) {
   const L = m.userData.line; if (L) L.material.opacity = L.userData.baseOpacity * a;
 }
 
-function meshesOf(root) { const a = []; root.traverse((o) => o.isMesh && a.push(o)); return a; }
+function meshesOf(root) { const a = []; root.traverse((o) => o.isMesh && !o.isLineSegments2 && a.push(o)); return a; }
 
 // ---------- camera ----------
 let anim = null;
@@ -207,7 +261,7 @@ function back() { if (level > 1) goToLevel(level - 1); }
 
 function renderCrumbs() {
   const c = $('crumbs'); c.innerHTML = '';
-  const items = ['Bangladesh', ...path];
+  const items = [lang === 'bn' ? 'বাংলাদেশ' : 'Bangladesh', ...path.map(tr)];
   items.forEach((t, i) => {
     if (i) c.insertAdjacentHTML('beforeend', '<i>›</i>');
     const last = i === items.length - 1;
@@ -215,7 +269,7 @@ function renderCrumbs() {
     el.textContent = t; if (last) el.className = 'cur'; else el.onclick = () => goToLevel(i + 1);
     c.appendChild(el);
   });
-  const hint = { 1: 'Tap a division', 2: 'Tap a district', 3: 'Tap an area' }[level];
+  const hint = (lang === 'bn' ? { 1: 'একটি বিভাগে ট্যাপ করুন', 2: 'একটি জেলায় ট্যাপ করুন', 3: 'একটি এলাকায় ট্যাপ করুন' } : { 1: 'Tap a division', 2: 'Tap a district', 3: 'Tap an area' })[level];
   c.insertAdjacentHTML('beforeend', `<i>·</i><span style="opacity:.65">${hint}</span>`);
 }
 
@@ -276,7 +330,7 @@ function setHover(m, e) {
   const tip = $('tip');
   if (m) {
     m.material.emissive?.setHex(0x2a6a4a);
-    tip.textContent = lastOf(m); tip.style.opacity = 1;
+    tip.textContent = tr(lastOf(m)); tip.style.opacity = 1;
     tip.style.left = e.clientX + 'px'; tip.style.top = e.clientY + 'px';
     canvas.style.cursor = 'pointer';
   } else { tip.style.opacity = 0; canvas.style.cursor = 'grab'; }
@@ -325,12 +379,117 @@ document.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click
 $('home').onclick = () => goHome();
 $('back').onclick = back;
 
+// ---------- labels on the map + language toggle ----------
+(function injectStyle() {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@600;700&display=swap';
+  document.head.appendChild(link);
+  const st = document.createElement('style');
+  st.textContent = `
+#labels{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.lb{position:absolute;left:0;top:0;white-space:nowrap;font-weight:700;color:#fff;
+  font-family:'Noto Sans Bengali','Kalpurush','Nirmala UI','Bangla Sangam MN',system-ui,sans-serif;
+  text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,0 0 6px rgba(0,0,0,.8);will-change:transform}
+.lb.l1{font-size:19px}.lb.l2{font-size:15px}.lb.l3{font-size:12.5px}
+@media (max-width:700px){.lb.l1{font-size:15px}.lb.l2{font-size:12px}.lb.l3{font-size:10.5px}}
+#langtoggle{position:fixed;top:14px;right:14px;z-index:20;display:flex;gap:2px;padding:3px;border-radius:999px;
+  background:rgba(10,30,22,.78);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(6px)}
+#langtoggle button{border:0;background:transparent;color:#cfe9db;padding:6px 14px;border-radius:999px;cursor:pointer;
+  font:600 13px 'Noto Sans Bengali','Nirmala UI','Bangla Sangam MN',system-ui,sans-serif}
+#langtoggle button.on{background:#2a9d62;color:#fff}`;
+  document.head.appendChild(st);
+})();
+
+const labelsEl = document.createElement('div'); labelsEl.id = 'labels';
+canvas.insertAdjacentElement('afterend', labelsEl);
+let lItems = [], lShown = null, lDirty = true;
+const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3(), _p = new THREE.Vector3();
+
+function topCentroid(m) {                 // centre of the top face (area-weighted), so the name sits on the piece
+  m.updateWorldMatrix(true, false);
+  const pos = m.geometry.attributes.position, idx = m.geometry.index;
+  const n = idx ? idx.count : pos.count;
+  let maxY = -Infinity, minY = Infinity;
+  for (let i = 0; i < pos.count; i++) {
+    _a.fromBufferAttribute(pos, i).applyMatrix4(m.matrixWorld);
+    if (_a.y > maxY) maxY = _a.y; if (_a.y < minY) minY = _a.y;
+  }
+  const lim = maxY - (maxY - minY) * 0.05 - 1e-6;
+  const get = (k, out) => out.fromBufferAttribute(pos, idx ? idx.getX(k) : k).applyMatrix4(m.matrixWorld);
+  let sx = 0, sz = 0, sa = 0;
+  for (let k = 0; k + 2 < n; k += 3) {
+    get(k, _a); get(k + 1, _b); get(k + 2, _c);
+    if (_a.y < lim || _b.y < lim || _c.y < lim) continue;
+    const ar = Math.abs((_b.x - _a.x) * (_c.z - _a.z) - (_c.x - _a.x) * (_b.z - _a.z)) / 2;
+    sx += ar * (_a.x + _b.x + _c.x) / 3; sz += ar * (_a.z + _b.z + _c.z) / 3; sa += ar;
+  }
+  if (!sa) { const c = new THREE.Box3().setFromObject(m).getCenter(new THREE.Vector3()); return { x: c.x, y: maxY, z: c.z, area: 0, y0: m.position.y }; }
+  return { x: sx / sa, y: maxY, z: sz / sa, area: sa, y0: m.position.y };
+}
+
+function rebuildLabels() {
+  labelsEl.innerHTML = ''; lItems = []; lShown = shown; lDirty = false;
+  shown.forEach((m) => {
+    if (!m.userData.lc) m.userData.lc = topCentroid(m);
+    const el = document.createElement('div');
+    el.className = 'lb l' + level; el.textContent = tr(lastOf(m));
+    labelsEl.appendChild(el);
+    lItems.push({ m, el, lc: m.userData.lc, w: 0, h: 0 });
+  });
+  lItems.forEach((it) => { it.w = it.el.offsetWidth; it.h = it.el.offsetHeight; });
+  lItems.sort((a, b) => b.lc.area - a.lc.area);        // big pieces get their label first
+}
+
+function updateLabels() {
+  if (shown !== lShown || lDirty) rebuildLabels();
+  const W = innerWidth, H = innerHeight, placed = [];
+  for (const it of lItems) {
+    const { m, el, lc } = it;
+    _p.set(lc.x, lc.y + (m.position.y - lc.y0), lc.z).project(camera);
+    let ok = m.visible && _p.z > -1 && _p.z < 1 && Math.abs(_p.x) < 1.05 && Math.abs(_p.y) < 1.05;
+    let x = 0, y = 0;
+    if (ok) {
+      x = (_p.x * 0.5 + 0.5) * W; y = (-_p.y * 0.5 + 0.5) * H;
+      const r = { x0: x - it.w / 2 - 3, x1: x + it.w / 2 + 3, y0: y - it.h / 2 - 1, y1: y + it.h / 2 + 1 };
+      if (placed.some((q) => r.x0 < q.x1 && r.x1 > q.x0 && r.y0 < q.y1 && r.y1 > q.y0)) ok = false; else placed.push(r);
+    }
+    if (!ok) { if (it.on !== false) { el.style.opacity = 0; it.on = false; } continue; }
+    it.on = true;
+    el.style.opacity = Math.min(1, m.material.opacity);
+    el.style.transform = `translate(${(x - it.w / 2).toFixed(1)}px,${(y - it.h / 2).toFixed(1)}px)`;
+  }
+}
+
+const langBox = document.createElement('div'); langBox.id = 'langtoggle';
+langBox.innerHTML = '<button data-l="bn">বাংলা</button><button data-l="en">English</button>';
+document.body.appendChild(langBox);
+function setLang(l) {
+  lang = l;
+  try { localStorage.setItem('lang', l); } catch (e) {}
+  document.documentElement.lang = l;
+  langBox.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.l === l));
+  lDirty = true; renderCrumbs();
+  lItems.forEach((it) => { it.el.textContent = tr(lastOf(it.m)); it.w = it.el.offsetWidth; it.h = it.el.offsetHeight; });
+}
+langBox.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { setLang(b.dataset.l); toast('Language: ' + b.dataset.l + ' · ' + lItems.length + ' labels on map', 4000); } });
+setLang(lang);
+
 // ---------- loop ----------
 function resize() {
   const w = innerWidth, h = innerHeight;
   renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
 }
 addEventListener('resize', resize); resize();
-renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+renderer.setAnimationLoop(() => { controls.update(); Blood.update(performance.now() / 1000, level, shown); renderer.render(scene, camera); try { updateLabels(); } catch (e) { if (!window.__lblErr) { window.__lblErr = 1; console.error(e); toast('Label error: ' + e.message, 15000); } } });
 
-goHome(true);
+async function startup() {
+  await goHome(true);                         // front page appears after level 1 only
+  $('loading').classList.add('hide');
+  const idle = (f) => (window.requestIdleCallback ? requestIdleCallback(f, { timeout: 1500 }) : setTimeout(f, 300));
+  for (const l of [2, 3]) {                   // districts, then areas, quietly
+    await new Promise((r) => idle(r));
+    await loadLevel(l, true);
+  }
+}
+startup();
