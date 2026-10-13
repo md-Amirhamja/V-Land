@@ -493,3 +493,13 @@ async function startup() {
   }
 }
 startup();
+
+
+// ---------- Mapping (land measuring tool) ----------
+import { initMapping } from './mapping/mapping.js';
+const mapping = initMapping({ lang: (typeof lang !== 'undefined' && lang) || 'bn' });
+// keep it in sync with the বাংলা / English switch
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-l]');
+  if (b && (b.dataset.l === 'bn' || b.dataset.l === 'en')) mapping.setLang(b.dataset.l);
+});
