@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import * as Blood from './blood.js';
-import BN_LIST, { EN_FIX } from './names-bn.js';
+import BN_LIST, { EN_FIX } from './names-bn.js'; 
 
 /* ------------------------------------------------------------------ *
  * MODEL NAMING RULE (Blender object names, separator = two underscores)
