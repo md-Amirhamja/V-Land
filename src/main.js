@@ -92,10 +92,17 @@ async function loadLevelNow(l, quiet) {
     $('loading').classList.remove('hide');
   }
   try {
-    const gltf = await loader.loadAsync(FILES[l]);
+    const gltf = await Promise.race([
+      loader.loadAsync(FILES[l], (e) => console.log('[load]', FILES[l], e.loaded, '/', e.total)),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout 30s: model or Draco decoder stalled')), 30000)),
+    ]);
+    console.log('[load] done', FILES[l]);
     const root = gltf.scene;
-    root.traverse((o) => {
-      if (o.isMesh && !o.isLineSegments2) {
+    const _meshes = [];
+    root.traverse((o) => { if (o.isMesh && !o.isLineSegments2) _meshes.push(o); });
+    let _t = performance.now();
+    for (const o of _meshes) {
+      {
         o.material = o.material.clone();           // own material = own highlight
         if (l > 1) tint(o);
         o.userData.base = o.material.color.clone();
@@ -108,7 +115,9 @@ async function loadLevelNow(l, quiet) {
         addOutline(o, l);
         o.visible = false;
       }
-    });
+      if (performance.now() - _t > 8) { await new Promise((r) => setTimeout(r, 0)); _t = performance.now(); }
+    }
+    console.log('[load] meshes ready', FILES[l]);
     if (l > 1) {                           // separate overlapping pieces by real height (greedy layering)
       root.updateMatrixWorld(true);
       const ms = meshesOf(root).map((o) => ({ o, b: new THREE.Box3().setFromObject(o) }));
@@ -417,15 +426,50 @@ function topCentroid(m) {                 // centre of the top face (area-weight
   }
   const lim = maxY - (maxY - minY) * 0.05 - 1e-6;
   const get = (k, out) => out.fromBufferAttribute(pos, idx ? idx.getX(k) : k).applyMatrix4(m.matrixWorld);
-  let sx = 0, sz = 0, sa = 0;
+  let sx = 0, sz = 0, sa = 0; const tris = [];
   for (let k = 0; k + 2 < n; k += 3) {
     get(k, _a); get(k + 1, _b); get(k + 2, _c);
     if (_a.y < lim || _b.y < lim || _c.y < lim) continue;
     const ar = Math.abs((_b.x - _a.x) * (_c.z - _a.z) - (_c.x - _a.x) * (_b.z - _a.z)) / 2;
-    sx += ar * (_a.x + _b.x + _c.x) / 3; sz += ar * (_a.z + _b.z + _c.z) / 3; sa += ar;
+    tris.push(_a.x, _a.z, _b.x, _b.z, _c.x, _c.z); sx += ar * (_a.x + _b.x + _c.x) / 3; sz += ar * (_a.z + _b.z + _c.z) / 3; sa += ar;
   }
   if (!sa) { const c = new THREE.Box3().setFromObject(m).getCenter(new THREE.Vector3()); return { x: c.x, y: maxY, z: c.z, area: 0, y0: m.position.y }; }
-  return { x: sx / sa, y: maxY, z: sz / sa, area: sa, y0: m.position.y };
+  const pp = poleOf(tris, sx / sa, sz / sa); return { x: pp.x, y: maxY, z: pp.z, area: sa, y0: m.position.y };
+}
+
+function poleOf(tris, fx, fz) {            // point farthest from the piece's border (always inside the shape)
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (let i = 0; i < tris.length; i += 2) { x0 = Math.min(x0, tris[i]); x1 = Math.max(x1, tris[i]); z0 = Math.min(z0, tris[i + 1]); z1 = Math.max(z1, tris[i + 1]); }
+  const span = Math.max(x1 - x0, z1 - z0);
+  if (!(span > 0)) return { x: fx, z: fz };
+  const N = 96, s = span / N, W = Math.ceil((x1 - x0) / s) + 3, H = Math.ceil((z1 - z0) / s) + 3;
+  const g = new Uint8Array(W * H);
+  for (let t = 0; t < tris.length; t += 6) {
+    const ax = tris[t], az = tris[t + 1], bx = tris[t + 2], bz = tris[t + 3], cx = tris[t + 4], cz = tris[t + 5];
+    const i0 = Math.max(0, Math.floor((Math.min(ax, bx, cx) - x0) / s)), i1 = Math.min(W - 1, Math.ceil((Math.max(ax, bx, cx) - x0) / s) + 1);
+    const j0 = Math.max(0, Math.floor((Math.min(az, bz, cz) - z0) / s)), j1 = Math.min(H - 1, Math.ceil((Math.max(az, bz, cz) - z0) / s) + 1);
+    for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+      const px = x0 + (i - 1 + 0.5) * s, pz = z0 + (j - 1 + 0.5) * s;
+      const d1 = (px - bx) * (az - bz) - (ax - bx) * (pz - bz);
+      const d2 = (px - cx) * (bz - cz) - (bx - cx) * (pz - cz);
+      const d3 = (px - ax) * (cz - az) - (cx - ax) * (pz - az);
+      if (!((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))) g[j * W + i] = 1;
+    }
+  }
+  const d = new Float32Array(W * H);
+  for (let k = 0; k < d.length; k++) d[k] = g[k] ? 1e9 : 0;
+  for (let j = 1; j < H - 1; j++) for (let i = 1; i < W - 1; i++) {
+    const k = j * W + i; if (!g[k]) continue;
+    d[k] = Math.min(d[k], d[k - 1] + 1, d[k - W] + 1, d[k - W - 1] + 1.414, d[k - W + 1] + 1.414);
+  }
+  let best = 0, bi = -1, bj = -1;
+  for (let j = H - 2; j >= 1; j--) for (let i = W - 2; i >= 1; i--) {
+    const k = j * W + i; if (!g[k]) continue;
+    d[k] = Math.min(d[k], d[k + 1] + 1, d[k + W] + 1, d[k + W + 1] + 1.414, d[k + W - 1] + 1.414);
+    if (d[k] > best) { best = d[k]; bi = i; bj = j; }
+  }
+  if (bi < 0) return { x: fx, z: fz };
+  return { x: x0 + (bi - 1 + 0.5) * s, z: z0 + (bj - 1 + 0.5) * s };
 }
 
 function rebuildLabels() {
@@ -502,4 +546,23 @@ const mapping = initMapping({ lang: (typeof lang !== 'undefined' && lang) || 'bn
 document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-l]');
   if (b && (b.dataset.l === 'bn' || b.dataset.l === 'en')) mapping.setLang(b.dataset.l);
+});
+
+// ---------- keyboard controls ----------
+addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+  const t = e.target;
+  if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+  const mv = document.getElementById('mapview');
+  if (mv && !mv.hidden) return;                       // Google map view is open
+  const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  const HOLD = { ArrowLeft: 'rotL', ArrowRight: 'rotR', ArrowUp: 'tiltU', ArrowDown: 'tiltD',
+                 a: 'panL', d: 'panR', w: 'panU', s: 'panD', '+': 'zoomIn', '=': 'zoomIn', '-': 'zoomOut', '_': 'zoomOut' };
+  const ONCE = { r: '[data-act="reset"]', h: '#home', Home: '#home', Escape: '#back', Backspace: '#back' };
+  let btn = null;
+  if (HOLD[k]) btn = document.querySelector('#tools [data-act="' + HOLD[k] + '"]');
+  else if (ONCE[k] && !e.repeat) btn = document.querySelector('#tools ' + ONCE[k]);
+  if (!btn) return;
+  e.preventDefault();
+  btn.click();
 });
