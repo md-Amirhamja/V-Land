@@ -30,8 +30,6 @@ dist
 *.working
 
 # large local data (too big for GitHub)
-public/buildings/t/
-public/buildings/index.json
 public/buildings/dhaka-west.json
 # local backups from patching
 src/*.before-*
