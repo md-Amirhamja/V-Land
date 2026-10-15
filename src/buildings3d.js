@@ -99,6 +99,16 @@ async function staticFootprints(bbox) {
   return null;
 }
 
+const TILE_BASE = 'https://aginpbyaazzrcyoyhvsk.supabase.co/storage/v1/object/public/tiles/t/';
+async function fetchTile(k) {
+  try {
+    const r = await fetch(TILE_BASE + k + '.json.gz');
+    if (!r.ok) throw new Error(r.status);
+    return await new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).json();
+  } catch (e) {
+    try { const r2 = await fetch('/buildings/t/' + k + '.json'); return r2.ok ? await r2.json() : []; } catch (e2) { return []; }
+  }
+}
 // ---------- tiled static buildings (public/buildings/t/*.json) ----------
 let _tileIdx;
 async function tileFootprints(bbox) {
@@ -114,7 +124,7 @@ async function tileFootprints(bbox) {
     const jobs = [];
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       const k = y + '_' + x;
-      if (_tileIdx.set.has(k)) jobs.push(fetch('/buildings/t/' + k + '.json').then((r) => (r.ok ? r.json() : [])).catch(() => []));
+      if (_tileIdx.set.has(k)) jobs.push(fetchTile(k));
     }
     let out = [];
     for (const rows of await Promise.all(jobs)) for (const [i, h, n, g] of rows) {
