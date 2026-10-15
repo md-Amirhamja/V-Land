@@ -224,7 +224,9 @@ async function drill(mesh) {
   const name = lastOf(mesh);
   const nextLevel = level + 1;          // 2 = districts, 3 = areas
   if (level === 3) {                    // area clicked -> google map
-    busy = false; return openMap([...path, name], mesh);
+    busy = false;
+    if (window.__vlandAreaSheet) return window.__vlandAreaSheet({ key: mesh.name, label: tr(name), crumbs: [...path, name].map(tr), open: () => openMap([...path, name], mesh) });
+    return openMap([...path, name], mesh);
   }
   // 1) lift the clicked piece + fade the others
   const h = boxOf([mesh]).getSize(new THREE.Vector3()).length() * 0.12;
@@ -566,3 +568,6 @@ addEventListener('keydown', (e) => {
   e.preventDefault();
   btn.click();
 });
+
+// ---------- V-Land portal bridge (Verify a Plot, Sign in, area sheet) ----------
+import './portal-bridge.js';

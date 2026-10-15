@@ -1,14 +1,9 @@
-// Docks the Mapping button directly above the map-controls panel (found via its "+" button).
+// Docks the Mapping button directly above the map-controls panel (found via #tools).
 const SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7z"/><path d="M9 4v13M15 7v13"/></svg>';
 
 function findPanel() {
-  const plus = [...document.querySelectorAll('button')].find(
-    (b) => !b.closest('.mp-root') && !b.classList.contains('mp-fab') && b.textContent.trim() === '+'
-  );
-  if (!plus) return null;
-  let p = plus.parentElement;
-  while (p && p !== document.body && p.querySelectorAll('button').length < 10) p = p.parentElement;
-  return p && p !== document.body ? p : null;
+  // the map-controls panel is #tools (was: searching for a button whose text is "+")
+  return document.getElementById('tools');
 }
 
 function place() {
