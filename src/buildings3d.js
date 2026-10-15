@@ -2,7 +2,9 @@
 import * as THREE from 'three';
 
 const MIRRORS = [
-  'https://overpass.openstreetmap.fr/api/interpreter',
+  ...(/^(localhost|127\.|192\.168\.|10\.)/.test(location.hostname) ? [] : ['/api/overpass']),
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
   'https://overpass.private.coffee/api/interpreter',
   'https://overpass-api.de/api/interpreter',
 ];
@@ -81,12 +83,95 @@ function parse(json) {
   return out;
 }
 
+async function staticFootprints(bbox) {
+  try {
+    const idx = await (await fetch('/buildings/index.json')).json();
+    const cy = (bbox.n + bbox.s) / 2, cx = (bbox.e + bbox.w) / 2;
+    for (const f of idx) {
+      if (cy >= f.s && cy <= f.n && cx >= f.w && cx <= f.e) {
+        const arr = await (await fetch('/buildings/' + f.file)).json();
+        return arr
+          .filter((b) => b.c[0] >= bbox.s && b.c[0] <= bbox.n && b.c[1] >= bbox.w && b.c[1] <= bbox.e)
+          .map((b) => ({ ...b, h: b.h > 0 ? Math.max(3, b.h) : heightOf({}, b.i) }));
+      }
+    }
+  } catch (e) { console.warn('static buildings unavailable', e); }
+  return null;
+}
+
+// ---------- tiled static buildings (public/buildings/t/*.json) ----------
+let _tileIdx;
+async function tileFootprints(bbox) {
+  try {
+    if (_tileIdx === undefined) {
+      const r = await fetch('/buildings/index.json');
+      const j = r.ok ? await r.json() : null;
+      _tileIdx = j && j.tiles ? { step: j.step, set: new Set(j.tiles) } : null;
+    }
+    if (!_tileIdx) return null;
+    const K = Math.round(1 / _tileIdx.step);
+    const y0 = Math.floor(bbox.s * K), y1 = Math.floor(bbox.n * K), x0 = Math.floor(bbox.w * K), x1 = Math.floor(bbox.e * K);
+    const jobs = [];
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+      const k = y + '_' + x;
+      if (_tileIdx.set.has(k)) jobs.push(fetch('/buildings/t/' + k + '.json').then((r) => (r.ok ? r.json() : [])).catch(() => []));
+    }
+    let out = [];
+    for (const rows of await Promise.all(jobs)) for (const [i, h, n, g] of rows) {
+      const m = g.length / 2 - 1; let sa = 0, so = 0;
+      for (let j = 0; j < m * 2; j += 2) { sa += g[j]; so += g[j + 1]; }
+      const c = [sa / m, so / m];
+      if (c[0] < bbox.s || c[0] > bbox.n || c[1] < bbox.w || c[1] > bbox.e) continue;
+      out.push({ i, h: h > 0 ? Math.max(3, h) : heightOf({}, i), g, c, n });
+    }
+    const MAXS = 25000;
+    if (out.length > MAXS) { const st = out.length / MAXS; out = Array.from({ length: MAXS }, (_, q) => out[Math.floor(q * st)]); }
+    return out;
+  } catch (e) { console.warn('tile buildings unavailable', e); return null; }
+}
+
+// ---------- satellite-AI estimate (public/buildings/est.json) ----------
+let _est;
+export async function estimateCount(bbox, geo2xz, mesh) {
+  try {
+    if (_est === undefined) { const r = await fetch('/buildings/est.json'); _est = r.ok ? await r.json() : null; }
+    if (!_est) return null;
+    const st = _est.step, c = _est.cells, pts = [];
+    for (let i = 0; i < c.length; i += 3) {
+      const lat = (c[i] + 0.5) * st, lon = (c[i + 1] + 0.5) * st;
+      if (lat < bbox.s || lat > bbox.n || lon < bbox.w || lon > bbox.e) continue;
+      pts.push({ c: [lat, lon], n: c[i + 2] });
+    }
+    const inside = geo2xz ? await filterInside(pts, geo2xz, mesh) : pts;
+    const n = inside.reduce((a, q) => a + q.n, 0);
+    return n >= 1000 ? Math.round(n / 100) * 100 : n;
+  } catch (e) { return null; }
+}
+
 export async function fetchFootprints(bbox, key, onStatus) {
-  const ck = key + '|' + [bbox.s, bbox.w, bbox.n, bbox.e].map((v) => v.toFixed(3)).join(',');
+  const st = await tileFootprints(bbox); if (st) { console.log("STATIC buildings", st.length); return st; }
+  const ck = 'v2|' + key + '|' + [bbox.s, bbox.w, bbox.n, bbox.e].map((v) => v.toFixed(3)).join(',');
   const hit = await cacheGet(ck);
   if (hit && hit.fps) return hit.fps;
-  const q = '[out:json][timeout:60];(way["building"](' + [bbox.s, bbox.w, bbox.n, bbox.e].map((v) => v.toFixed(5)).join(',') + '););out geom ' + MAX_BUILDINGS + ';';
-  const fps = parse(await overpass(q, onStatus));
+  const STEP = 0.012, MAX_TILES = 64;
+  const rows = Math.min(8, Math.max(1, Math.ceil((bbox.n - bbox.s) / STEP)));
+  const cols = Math.min(8, Math.max(1, Math.ceil((bbox.e - bbox.w) / STEP)));
+  const dh = (bbox.n - bbox.s) / rows, dw = (bbox.e - bbox.w) / cols;
+  const seen = new Map();
+  let done = 0; const total = Math.min(rows * cols, MAX_TILES);
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (done >= MAX_TILES) break;
+      const s0 = bbox.s + r * dh, n0 = s0 + dh, w0 = bbox.w + c * dw, e0 = w0 + dw;
+      const q = '[out:json][timeout:60];(way["building"](' + [s0, w0, n0, e0].map((v) => v.toFixed(5)).join(',') + '););out geom;';
+      if (onStatus) onStatus('Loading buildings… tile ' + (done + 1) + '/' + total);
+      try {
+        for (const f of parse(await overpass(q, null))) seen.set(f.i, f);
+      } catch (e) { console.warn('tile failed', r, c, e); }
+      done++;
+    }
+  }
+  const fps = [...seen.values()];
   if (fps.length) cacheSet(ck, { fps, t: Date.now() });
   return fps;
 }
