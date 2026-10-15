@@ -20,3 +20,12 @@ dist
 *.working
 *BLOOD-WORKING
 tree.txt
+
+# V-Land P5
+.env
+.env.*
+!.env.example
+supabase/.temp
+coverage
+playwright-report
+test-results
