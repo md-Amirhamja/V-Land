@@ -1,0 +1,20 @@
+{
+ "admin.title": "অ্যাডমিন কনসোল",
+ "admin.dashboard": "ড্যাশবোর্ড",
+ "admin.records": "রেকর্ড",
+ "admin.fraud": "জালিয়াতি কেন্দ্র",
+ "admin.inbox": "ইনবক্স",
+ "admin.rules": "রুল স্টুডিও",
+ "admin.reports": "রিপোর্ট",
+ "admin.audit": "অডিট লগ",
+ "admin.system": "সিস্টেম",
+ "admin.welcome": "স্বাগতম",
+ "admin.emptyTitle": "ড্যাশবোর্ড এখনো খালি",
+ "admin.emptyBody": "ডেটা ও যাচাই ইঞ্জিন রাউন্ড ২-এ, কনসোলের মডিউল রাউন্ড ৪-এ আসবে।",
+ "admin.disabledHint": "রাউন্ড ৪-এ চালু হবে",
+ "admin.collapse": "পাশের মেনু ছোট করুন",
+ "admin.expand": "পাশের মেনু বড় করুন",
+ "admin.userMenu": "ব্যবহারকারী মেনু",
+ "admin.roleAdmin": "অ্যাডমিন",
+ "admin.demoOnly": "শুধু কৃত্রিম ডেটা ব্যবহার করা হয়েছে।"
+}

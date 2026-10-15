@@ -1,0 +1,20 @@
+{
+ "admin.title": "Admin console",
+ "admin.dashboard": "Dashboard",
+ "admin.records": "Records",
+ "admin.fraud": "Fraud center",
+ "admin.inbox": "Inbox",
+ "admin.rules": "Rule Studio",
+ "admin.reports": "Reports",
+ "admin.audit": "Audit log",
+ "admin.system": "System",
+ "admin.welcome": "Welcome",
+ "admin.emptyTitle": "The dashboard is empty for now",
+ "admin.emptyBody": "The data and verification engine arrive in Round 2; the console modules in Round 4.",
+ "admin.disabledHint": "Enabled in Round 4",
+ "admin.collapse": "Collapse sidebar",
+ "admin.expand": "Expand sidebar",
+ "admin.userMenu": "User menu",
+ "admin.roleAdmin": "Admin",
+ "admin.demoOnly": "Synthetic data only."
+}
