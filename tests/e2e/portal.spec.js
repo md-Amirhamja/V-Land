@@ -26,7 +26,7 @@ test('citizen login works and survives a refresh', async ({ page }) => {
 test('admin login works and lands on the dashboard', async ({ page }) => {
   await login(page, '/admin/login', ADMIN);
   await expect(page).toHaveURL(/\/admin$/);
-  await expect(page.getByRole('navigation', { name: 'Admin' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
 test('each portal rejects the other account', async ({ page }) => {

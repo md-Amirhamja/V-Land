@@ -35,3 +35,9 @@
   #vl-sheet{bottom:max(76px,calc(env(safe-area-inset-bottom) + 70px))}
   #vl-sheet .vl-row{grid-template-columns:1fr}
 }
+#vl-actions,#vl-signbtn{position:relative;z-index:9999}
+.mp-fab{z-index:50}
+
+@media (max-width: 600px) {
+  #langtoggle { top: auto !important; bottom: 12px !important; right: 12px !important; }
+}
