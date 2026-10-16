@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import * as Blood from './blood.js';
+import * as Bld from './buildings3d.js';
 import BN_LIST, { EN_FIX } from './names-bn.js'; 
 
 /* ------------------------------------------------------------------ *
@@ -64,6 +65,7 @@ let shown = [];              // currently interactive meshes
 let hovered = null;
 let busy = false;
 let preloading = true;
+let areaMode = null;                 // 3D buildings view of one area
 const home = { pos: new THREE.Vector3(), target: new THREE.Vector3() };
 
 const $ = (id) => document.getElementById(id);
@@ -213,6 +215,7 @@ function show(list) {
 
 async function goHome(instant = false) {
   if (busy) return; busy = true;
+  clearArea();
   level = 1; path = [];
   const root = await loadLevel(1);
   if (root) { show(meshesOf(root)); await flyTo(boxOf(shown), { instant }); if (instant) { home.pos.copy(camera.position); home.target.copy(controls.target); } }
@@ -224,9 +227,7 @@ async function drill(mesh) {
   const name = lastOf(mesh);
   const nextLevel = level + 1;          // 2 = districts, 3 = areas
   if (level === 3) {                    // area clicked -> google map
-    busy = false;
-    if (window.__vlandAreaSheet) return window.__vlandAreaSheet({ key: mesh.name, label: tr(name), crumbs: [...path, name].map(tr), open: () => openMap([...path, name], mesh) });
-    return openMap([...path, name], mesh);
+    busy = false; return enterArea(mesh);
   }
   // 1) lift the clicked piece + fade the others
   const h = boxOf([mesh]).getSize(new THREE.Vector3()).length() * 0.12;
@@ -260,6 +261,7 @@ async function drill(mesh) {
 async function goToLevel(l) {      // breadcrumb jump
   if (busy || l === level) return;
   if (l === 1) return goHome();
+  clearArea();
   busy = true;
   const target = path.slice(0, l - 1);
   const root = await loadLevel(l);
@@ -268,7 +270,7 @@ async function goToLevel(l) {      // breadcrumb jump
   path = target; level = l; show(kids); await flyTo(boxOf(kids)); renderCrumbs(); busy = false;
 }
 
-function back() { if (level > 1) goToLevel(level - 1); }
+function back() { if (areaMode) return exitArea(); if (level > 1) goToLevel(level - 1); }
 
 function renderCrumbs() {
   const c = $('crumbs'); c.innerHTML = '';
@@ -299,9 +301,9 @@ function mapByName(q) {
   const e = encodeURIComponent(q);
   showEmbed(`https://maps.google.com/maps?q=${e}&z=13&output=embed`, `https://www.google.com/maps/search/?api=1&query=${e}`);
 }
-function mapByPos() {
+function mapByPos(zoom) {
   const { lat, lng } = curMap.geo;
-  showEmbed(`https://maps.google.com/maps?q=${lat},${lng}&ll=${lat},${lng}&z=12&output=embed`,
+  showEmbed(`https://maps.google.com/maps?q=${lat},${lng}&ll=${lat},${lng}&z=${zoom || 12}&output=embed`,
             `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`);
 }
 (function buildMapBar() {
@@ -314,14 +316,39 @@ function mapByPos() {
   input.addEventListener('keydown', (e) => e.key === 'Enter' && mapByName(input.value));
   bar.insertBefore(bp, $('openg')); bar.insertBefore(bs, bp); bar.insertBefore(input, bs);
 })();
-function openMap(parts, mesh) {
+// find the real place: OSM search limited to a box around the 3D estimate, so same-named places elsewhere are ignored
+async function geocodeArea(clean, dist, geo) {
+  const lat = +geo.lat, lng = +geo.lng, d = 1.0;
+  const vb = [lng - d, lat + d, lng + d, lat - d].join(',');
+  const tries = [
+    'q=' + encodeURIComponent(clean) + '&viewbox=' + vb + '&bounded=1',
+    'q=' + encodeURIComponent(clean + ', ' + dist),
+    'q=' + encodeURIComponent(clean + ', Bangladesh'),
+  ];
+  for (const t of tries) {
+    try {
+      const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=bd&accept-language=en&' + t);
+      const j = await r.json();
+      if (j && j[0]) return { lat: (+j[0].lat).toFixed(5), lng: (+j[0].lon).toFixed(5), name: j[0].display_name };
+    } catch (e) { /* try next */ }
+  }
+  return null;
+}
+function openMap(parts, mesh, realGeo) {
   const [div, dist, area] = parts;
   const clean = area.replace(/\s+\d+$/, '');      // drop the "_2" added for duplicate names
-  curMap = { geo: geoOf(mesh) };
+  curMap = { geo: realGeo || geoOf(mesh) };
   $('maptitle').textContent = `${clean} · ${dist} · ${div}`;
   $('mapq').value = `${clean}, ${dist}, Bangladesh`;
   $('mapview').hidden = false;
-  mapByName($('mapq').value);
+  console.log('MAP', JSON.stringify(parts), JSON.stringify(curMap.geo));
+  const tapped = parts.join('/');
+  if (realGeo) { mapByPos(16); return; }
+  mapByPos(13);
+  geocodeArea(clean, dist, curMap.geo).then((g) => {
+    console.log('GEOCODE', clean, g);
+    if (g && !$('mapview').hidden && $('maptitle').textContent.startsWith(clean)) { curMap.geo = g; mapByPos(15); }
+  });
 }
 $('closemap').onclick = () => { $('mapview').hidden = true; $('gmap').src = 'about:blank'; };
 
@@ -332,8 +359,18 @@ function pick(e) {
   const r = canvas.getBoundingClientRect();
   mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(mouse, camera);
-  const hit = ray.intersectObjects(shown, false)[0];
-  return hit ? hit.object : null;
+  const hits = ray.intersectObjects(shown, false);
+  if (!hits.length) return null;
+  const first = hits[0].object, pt = hits[0].point;
+  const bb = (m) => m.userData._bb || (m.userData._bb = new THREE.Box3().setFromObject(m));
+  const near = shown.filter((m) => { const b = bb(m); return pt.x >= b.min.x && pt.x <= b.max.x && pt.z >= b.min.z && pt.z <= b.max.z; });
+  if (near.length < 2) return first;
+  const down = new THREE.Raycaster(new THREE.Vector3(pt.x, 1e5, pt.z), new THREE.Vector3(0, -1, 0));
+  const objs = [...new Set(down.intersectObjects(near, false).map((h) => h.object))];
+  if (!objs.includes(first)) return first;
+  const size = (m) => { const b = bb(m); return (b.max.x - b.min.x) * (b.max.z - b.min.z); };
+  objs.sort((a, b) => size(a) - size(b));
+  return objs[0];
 }
 function setHover(m, e) {
   if (hovered && hovered !== m && hovered.material.emissive) hovered.material.emissive.setHex(0x000000);
@@ -354,6 +391,7 @@ canvas.addEventListener('pointerup', (e) => {
   const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
   down = null;
   if (moved > 6 || busy) return;          // it was a drag, not a tap
+  if (areaMode) { const bi = pickBuilding3D(e); if (bi !== null) return selectBuilding(bi); }
   const m = pick(e); if (m) drill(m);
 });
 
@@ -541,6 +579,156 @@ async function startup() {
 startup();
 
 
+// ---------- 3D buildings inside an area (OpenStreetMap) ----------
+const GEO = (window.__geo = window.__geo || { latN: 26.63, latS: 20.74, lngW: 88.03, lngE: 92.67 });
+function worldBounds() { const root = cache[3]; root.updateMatrixWorld(true); if (!bounds) bounds = new THREE.Box3().setFromObject(root); return bounds; }
+function geo2xz(lat, lng) {
+  const b = worldBounds();
+  return { x: b.min.x + ((lng - GEO.lngW) / (GEO.lngE - GEO.lngW)) * (b.max.x - b.min.x),
+           z: b.min.z + ((GEO.latN - lat) / (GEO.latN - GEO.latS)) * (b.max.z - b.min.z) };
+}
+function xz2geo(x, z) {
+  const b = worldBounds();
+  return { lat: GEO.latN - ((z - b.min.z) / (b.max.z - b.min.z)) * (GEO.latN - GEO.latS),
+           lng: GEO.lngW + ((x - b.min.x) / (b.max.x - b.min.x)) * (GEO.lngE - GEO.lngW) };
+}
+(function bldStyle() {
+  const st = document.createElement('style');
+  st.textContent = `
+#bldhud{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:25;display:none;align-items:center;gap:10px;
+  padding:8px 14px;border-radius:999px;background:rgba(10,30,22,.85);border:1px solid rgba(255,255,255,.25);color:#e8f7ef;
+  backdrop-filter:blur(6px);font:600 13px 'Noto Sans Bengali',system-ui,sans-serif;max-width:94vw}
+#bldhud button{border:0;border-radius:999px;padding:6px 12px;cursor:pointer;background:#2a9d62;color:#fff;font:inherit}
+#bldhud small{opacity:.6;font-weight:400}
+.maphead a.bldlink{display:none;padding:6px 10px;border-radius:8px;background:#2a9d62;color:#fff;text-decoration:none;font:600 13px system-ui;margin-right:6px;white-space:nowrap}`;
+  document.head.appendChild(st);
+})();
+const bldHud = document.createElement('div'); bldHud.id = 'bldhud'; document.body.appendChild(bldHud);
+const bldLinks = (function () {
+  const bar = document.querySelector('.maphead'), mk = (t) => { const a = document.createElement('a'); a.className = 'bldlink'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = t; return a; };
+  const street = mk('🚶 Street view'), earth = mk('🌍 Google Earth');
+  if (bar) { bar.insertBefore(earth, $('openg')); bar.insertBefore(street, earth); }
+  return { street, earth };
+})();
+
+function clearArea() {
+  if (!areaMode) return;
+  scene.remove(areaMode.obj); areaMode.obj.geometry.dispose(); areaMode.obj.material.dispose();
+  areaMode = null; bldHud.style.display = 'none'; labelsEl.style.display = '';
+  show(shown);
+}
+function exitArea() { clearArea(); return flyTo(boxOf(shown)); }
+
+// real boundary of the tapped area from OpenStreetMap (so the 3D buildings and the Google map use the same true place)
+async function realBox(name, dist, est) {
+  const clean = name.replace(/\s+\d+$/, '');
+  try {
+    const q = encodeURIComponent(clean + ', ' + dist + ', Bangladesh');
+    const ck = 'rb|' + q; let j = null;
+    try { j = JSON.parse(localStorage.getItem(ck) || 'null'); } catch (e) {}
+    if (!j) {
+      const _c = new AbortController(); setTimeout(() => _c.abort(), 6000);
+      const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=8&countrycodes=bd&accept-language=en&q=' + q, { signal: _c.signal });
+      j = await r.json();
+      try { localStorage.setItem(ck, JSON.stringify(j)); } catch (e) {}
+    }
+    const d = String(dist).toLowerCase();
+    const hit = j.find((x) => String(x.display_name).toLowerCase().includes(d) && x.boundingbox) || j.find((x) => x.boundingbox);
+    if (!hit) return null;
+    let [s, n, w, e] = hit.boundingbox.map(Number);
+    const cy = (s + n) / 2, cx = (w + e) / 2, MAX = 0.025, MIN = 0.006;
+    if (n - s > 2 * MAX) { s = cy - MAX; n = cy + MAX; }
+    if (e - w > 2 * MAX) { w = cx - MAX; e = cx + MAX; }
+    if (n - s < 2 * MIN) { s = cy - MIN; n = cy + MIN; }
+    if (e - w < 2 * MIN) { w = cx - MIN; e = cx + MIN; }
+    const c = { lat: (s + n) / 2, lng: (w + e) / 2 };
+    return { bbox: { s, n, w, e }, c, dLat: est.lat - c.lat, dLng: est.lng - c.lng, label: hit.display_name };
+  } catch (err) { console.warn('realBox failed', err); return null; }
+}
+
+async function enterArea(mesh) {
+  if (busy) return;
+  if (areaMode && areaMode.mesh === mesh) { flyTo(areaMode.box, { tilt: 0.5, fit: 0.95 }); return; }
+  busy = true; clearArea();
+  const name = lastOf(mesh);
+  try {
+    const others = shown.filter((m) => m !== mesh);
+    others.forEach((m) => (m.material.transparent = true));
+    tween(500, (k) => others.forEach((m) => setAlpha(m, 1 - 0.8 * k)));
+    const box = boxOf([mesh]);
+    const _t0 = performance.now(); const flyP = flyTo(box, { tilt: 0.7, fit: 1.1 });
+    const a = xz2geo(box.min.x, box.min.z), c = xz2geo(box.max.x, box.max.z);
+    const estBbox = { n: a.lat, w: a.lng, s: c.lat, e: c.lng };
+    const real = await realBox(name, path[1] || '', { lat: (a.lat + c.lat) / 2, lng: (a.lng + c.lng) / 2 });
+    console.log('REALBOX', name, real && real.label, real && JSON.stringify(real.bbox), 'est', JSON.stringify(estBbox));
+    const bbox = real ? real.bbox : estBbox;
+    window.__realGeo = real ? { lat: real.c.lat.toFixed(5), lng: real.c.lng.toFixed(5) } : null;
+    const g2 = real ? (la, ln) => geo2xz(la + real.dLat, ln + real.dLng) : geo2xz;
+    toast(lang === 'bn' ? 'ভবন লোড হচ্ছে…' : 'Loading buildings…', 60000);
+    const all = await Bld.fetchFootprints(bbox, [...path, name].join('/').toLowerCase(), (t) => toast(t, 60000));
+    console.log('T fetched', Math.round(performance.now() - _t0), 'ms');
+    let kept = real ? all : await Bld.filterInside(all, geo2xz, mesh), note = ''; console.log("COUNT fetched",all.length,"kept",kept.length);
+    if (kept.length < 5 && all.length > 50) { kept = all; note = ' (area outline did not line up with the map, showing the whole box)'; }
+    if (!kept.length) { toast(lang === 'bn' ? 'এই এলাকায় OSM-এ কোনো ভবন নেই' : 'No buildings mapped in OpenStreetMap here', 6000); show(shown); busy = false; return; }
+    let estN = await Bld.estimateCount(bbox, real ? null : g2, mesh); if (estN != null && estN < kept.length) estN = kept.length;
+    await flyP;
+    const wb = worldBounds();
+    const upm = (wb.max.z - wb.min.z) / ((GEO.latN - GEO.latS) * 111320);        // scene units per metre
+    const origin = box.getCenter(new THREE.Vector3());
+    const topY = mesh.userData.lc ? mesh.userData.lc.y + (mesh.position.y - mesh.userData.lc.y0) : box.max.y;
+    const _med = (a) => { a = a.slice().sort((x, y) => x - y); return a[a.length >> 1]; };
+    window.__areaGeo = { lat: _med(kept.map((f) => f.c[0])).toFixed(5), lng: _med(kept.map((f) => f.c[1])).toFixed(5) };
+    const built = Bld.buildMesh(kept, { geo2xz: g2, origin, upm, exag: 2 });
+    console.log('T mesh built', Math.round(performance.now() - _t0), 'ms,', kept.length, 'buildings');
+    built.obj.position.set(origin.x, topY, origin.z);
+    scene.add(built.obj);
+    const fbox = new THREE.Box3(new THREE.Vector3(box.min.x, topY, box.min.z), new THREE.Vector3(box.max.x, topY + built.maxH, box.max.z));
+    areaMode = { mesh, name, box: fbox, ...built };
+    labelsEl.style.display = 'none';
+    $('msg').style.display = 'none';
+    bldHud.innerHTML = `<span>${tr(name)} · ${kept.length.toLocaleString()} ${lang === 'bn' ? 'ম্যাপ করা ভবন' : 'mapped buildings'}${estN ? (lang === 'bn' ? ' / আনুমানিক ~' : ' / est. ~') + estN.toLocaleString() : ''} — ${lang === 'bn' ? 'একটি ভবনে ট্যাপ করুন' : 'tap one'}</span>` +
+      `<button id="bldmap">🗺 ${lang === 'bn' ? 'এলাকার ম্যাপ' : 'Area map'}</button><button id="bldexit">✕</button><small>© OpenStreetMap</small>`;
+    bldHud.style.display = 'flex';
+    $('bldexit').onclick = () => exitArea();
+    $('bldmap').onclick = () => { bldLinks.street.style.display = bldLinks.earth.style.display = 'none'; openMap([...path, name], mesh, window.__realGeo || window.__areaGeo); };
+    if (note) toast(note, 7000);
+    await flyTo(fbox, { tilt: 0.5, fit: 0.95 });
+  } catch (e) {
+    console.error(e);
+    toast('Could not load buildings: ' + (e && e.message ? e.message : e), 8000);
+    show(shown);
+  }
+  busy = false;
+}
+
+function pickBuilding3D(e) {
+  if (!areaMode) return null;
+  const r = canvas.getBoundingClientRect();
+  mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(mouse, camera);
+  const hit = ray.intersectObject(areaMode.obj, false)[0];
+  if (!hit) return null;
+  const i = Bld.rangeIndex(areaMode.ranges, hit.faceIndex * 3);
+  return i < 0 ? null : i;
+}
+
+function selectBuilding(i) {
+  const r = areaMode.ranges[i];
+  Bld.setSelected(areaMode, i);
+  const bx = areaMode.obj.position.x + r.cx, bz = areaMode.obj.position.z + r.cz;
+  // bearing from the 3D camera to the building (north = -Z), so Google opens looking the same way
+  const heading = Math.round((((Math.atan2(bx - camera.position.x, -(bz - camera.position.z)) * 180) / Math.PI) + 360) % 360);
+  const L = Bld.googleLinks(r.lat, r.lng, heading);
+  curMap = { geo: { lat: r.lat.toFixed(6), lng: r.lng.toFixed(6) } };
+  $('maptitle').textContent = `${r.name || (lang === 'bn' ? 'ভবন' : 'Building')} · ${tr(areaMode.name)}`;
+  $('mapq').value = `${r.lat.toFixed(6)}, ${r.lng.toFixed(6)}`;
+  $('mapview').hidden = false;
+  showEmbed(L.satEmbed, L.pin);
+  bldLinks.street.href = L.street; bldLinks.earth.href = L.earth;
+  bldLinks.street.style.display = bldLinks.earth.style.display = 'inline-block';
+}
+
+
 // ---------- Mapping (land measuring tool) ----------
 import { initMapping } from './mapping/mapping.js';
 const mapping = initMapping({ lang: (typeof lang !== 'undefined' && lang) || 'bn' });
@@ -569,5 +757,4 @@ addEventListener('keydown', (e) => {
   btn.click();
 });
 
-// ---------- V-Land portal bridge (Verify a Plot, Sign in, area sheet) ----------
 import './portal-bridge.js';
