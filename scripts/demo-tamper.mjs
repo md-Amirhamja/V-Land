@@ -5,7 +5,7 @@ const q = (sql) => {
   const j = JSON.parse(o); return j.rows ?? j;
 };
 const verify = () => {
-  const r = q("select case when to_regprocedure('public.audit_verify()') is not null then public.audit_verify() else private.audit_verify() end as r");
+  const r = q("select public.audit_verify() as r");
   return JSON.stringify(r[0].r);
 };
 const target = q('select id from public.audit_log order by id desc limit 1')[0]?.id;

@@ -14,12 +14,13 @@ for (const r of q("select table_name, privilege_type from information_schema.rol
   if (['TRUNCATE', 'REFERENCES', 'TRIGGER'].includes(r.privilege_type)) fail(`authenticated ${r.privilege_type} on ${r.table_name}`);
   if (LAND.includes(r.table_name) && ['INSERT', 'UPDATE', 'DELETE'].includes(r.privilege_type)) fail(`authenticated direct write ${r.privilege_type} on ${r.table_name}`);
 }
+const OWN_OK = new Set(['reports_own_select']);
 for (const r of q("select tablename, policyname, qual from pg_policies where schemaname='public'"))
-  if (LAND.includes(r.tablename) && !String(r.qual ?? '').includes('is_admin')) fail(`non-admin policy ${r.policyname} on ${r.tablename}`);
+  if (LAND.includes(r.tablename) && !(OWN_OK.has(r.policyname) && String(r.qual ?? '').includes('auth.uid()')) && !String(r.qual ?? '').includes('is_admin')) fail(`non-admin policy ${r.policyname} on ${r.tablename}`);
 
 for (const r of q("select tablename from pg_tables where schemaname='public' and not rowsecurity")) fail(`RLS off: ${r.tablename}`);
 
-for (const r of q("select p.proname from pg_proc p where p.pronamespace='public'::regnamespace and (left(p.proname,6)='admin_' or p.proname in ('run_fraud_detection','reset_demo_data')) and has_function_privilege('anon', p.oid, 'execute')"))
+for (const r of q("select p.proname from pg_proc p where p.pronamespace='public'::regnamespace and (left(p.proname,6)='admin_' or p.proname in ('run_fraud_detection','reset_demo_data','audit_write','audit_verify')) and has_function_privilege('anon', p.oid, 'execute')"))
   fail(`anon can execute ${r.proname}`);
 for (const r of q("select p.proname from pg_proc p where p.pronamespace='private'::regnamespace and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"))
   fail(`private function exposed: ${r.proname}`);

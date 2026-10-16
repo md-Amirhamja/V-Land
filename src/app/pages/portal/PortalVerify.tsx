@@ -67,6 +67,8 @@ export default function PortalVerify() {
     if (error) setErr(error.message); else setCert(data);
   }
 
+  const areaRow = areas.find((a) => a.glb_key === area);
+  const areaLabel = areaRow ? (bn() ? areaRow.name_bn : areaRow.name_en) : area.split('__').pop();
   const verdict: string | undefined = find(res, 'verdict');
   const findings: Any[] = find(res, 'findings') ?? find(res, 'reasons') ?? [];
   const steps: Any[] = find(res, 'next_steps') ?? [];
@@ -82,6 +84,7 @@ export default function PortalVerify() {
           <option value="">{tx('উপজেলা বাছুন', 'Choose upazila')}</option>
           {areas.map((a) => <option key={a.glb_key} value={a.glb_key}>{bn() ? a.name_bn : a.name_en}</option>)}
         </select>
+        {area && <p data-testid="area-name" className="text-sm font-medium">{areaLabel}</p>}
         <select aria-label="mouza" className={field} value={f.mouza} onChange={(e) => setF({ ...f, mouza: e.target.value })}>
           <option value="">{tx('মৌজা', 'Mouza')}</option>
           {mouzas.map((m) => <option key={m.id} value={m.id}>{bn() ? m.name_bn : m.name_en} {m.jl_no ? `(JL ${m.jl_no})` : ''}</option>)}
