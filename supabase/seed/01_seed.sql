@@ -372,3 +372,7 @@ select what, n from (
   union all select 8, 'acquisition_zones (expect 2)', count(*)::text from acquisition_zones
   union all select 9, 'upazila ' || up.pat, coalesce(g.glb_key, '?') from up left join geo_units g on g.id = up.gid
 ) x order by o, what;
+
+update deeds d set area_sold = round(p.area_decimal * o.share_num::numeric / o.share_den, 2)
+from ownerships o join plots p on p.id = o.plot_id
+where o.source_deed_id = d.id and o.to_date is null and p.scenario_code = 'SCN-15';
