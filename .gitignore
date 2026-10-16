@@ -3,24 +3,12 @@ dist
 .vercel
 *_orig.glb
 
-node_modules
-dist
 .DS_Store
 *.before-*
 *.bak*
 *.working
 *BLOOD-WORKING
 tree.txt
-
-node_modules
-dist
-.DS_Store
-*.before-*
-*.bak*
-*.working
-*BLOOD-WORKING
-tree.txt
-
 # V-Land P5
 .env
 .env.*
@@ -30,9 +18,14 @@ coverage
 playwright-report
 test-results
 .env.local
-.DS_Store
 **/.DS_Store
 *.bak
-*.before-*
 *.BLOOD-WORKING
-*.working
+=======
+# large local data (too big for GitHub)
+public/buildings/dhaka-west.json
+# local backups from patching
+src/*.before-*
+src/*.bak*
+src/*.working
+src/*.BLOOD-WORKING
