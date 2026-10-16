@@ -29,3 +29,10 @@ supabase/.temp
 coverage
 playwright-report
 test-results
+.env.local
+.DS_Store
+**/.DS_Store
+*.bak
+*.before-*
+*.BLOOD-WORKING
+*.working
