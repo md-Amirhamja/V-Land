@@ -13,6 +13,7 @@ import { FullPageSpinner } from '@/components/ui/core';
 import PortalHome from '@/pages/portal/PortalHome';
 import PortalVerify from '@/pages/portal/PortalVerify';
 import PortalMy from '@/pages/portal/PortalMy';
+import PortalCheck from '@/pages/portal/PortalCheck';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminSandbox from '@/pages/admin/AdminSandbox';
 import LoginPage from '@/pages/LoginPage';
@@ -38,6 +39,7 @@ export default function App() {
                     <Route path="/portal" element={<PortalLayout />}>
                       <Route index element={<PortalHome />} />
                       <Route path="verify" element={<PortalVerify />} />
+                      <Route path="check" element={<PortalCheck />} />
                       <Route path="my" element={<RequireRole role="citizen"><PortalMy /></RequireRole>} />
                       {UiGallery && <Route path="_ui" element={<UiGallery />} />}
                       <Route path="*" element={<NotFound />} />

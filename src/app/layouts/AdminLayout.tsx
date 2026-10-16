@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Activity, ChevronsLeft, ChevronsRight, FileCheck2, FolderOpen, Inbox, LayoutDashboard, LogOut, ScrollText, ShieldAlert, SlidersHorizontal, Settings2 } from 'lucide-react';
+import { FlaskConical, Activity, ChevronsLeft, ChevronsRight, FileCheck2, FolderOpen, Inbox, LayoutDashboard, LogOut, ScrollText, ShieldAlert, SlidersHorizontal, Settings2 } from 'lucide-react';
 import { useLang } from '@/i18n';
 import { useAuth } from '@/auth/AuthProvider';
 import { useIdleLogout } from '@/auth/useIdleLogout';
@@ -17,6 +17,7 @@ const ITEMS = [
   { to: '/admin/reports', key: 'admin.reports', Icon: FileCheck2 },
   { to: '/admin/audit', key: 'admin.audit', Icon: ScrollText },
   { to: '/admin/system', key: 'admin.system', Icon: Settings2 },
+  { to: '/admin/sandbox', key: 'admin.dashboard', Icon: FlaskConical, live: true, label: 'Sandbox' },
 ];
 
 export function AdminLayout() {
@@ -31,9 +32,9 @@ export function AdminLayout() {
         <aside className={cn('sticky top-0 hidden h-screen shrink-0 flex-col border-r border-line bg-surface2 transition-all md:flex', slim ? 'w-[72px]' : 'w-64')}>
           <div className="flex items-center gap-2 px-4 py-4"><img src="/logo.png" alt="" className="h-9 w-9" />{!slim && <div><div className="font-bold leading-tight">V-Land</div><div className="text-xs text-accent">{t('auth.adminBadge')}</div></div>}</div>
           <nav aria-label="Admin" className="flex-1 space-y-1 px-2">
-            {ITEMS.map(({ to, key, Icon, live }) => live
-              ? <Link key={to} to={to} aria-current="page" className={cn('flex min-h-[44px] items-center gap-3 rounded-xl bg-brand/20 px-3 text-sm font-semibold', slim && 'justify-center px-0')} title={t(key)}><Icon className="h-5 w-5 shrink-0" aria-hidden />{!slim && t(key)}</Link>
-              : <span key={to} aria-disabled="true" title={t('admin.disabledHint')} className={cn('flex min-h-[44px] cursor-not-allowed items-center gap-3 rounded-xl px-3 text-sm text-muted/70', slim && 'justify-center px-0')}><Icon className="h-5 w-5 shrink-0" aria-hidden />{!slim && t(key)}</span>)}
+            {ITEMS.map(({ to, key, Icon, live, label }) => live
+              ? <Link key={to} to={to} aria-current="page" className={cn('flex min-h-[44px] items-center gap-3 rounded-xl bg-brand/20 px-3 text-sm font-semibold', slim && 'justify-center px-0')} title={label ?? t(key)}><Icon className="h-5 w-5 shrink-0" aria-hidden />{!slim && (label ?? t(key))}</Link>
+              : <span key={to} aria-disabled="true" title={t('admin.disabledHint')} className={cn('flex min-h-[44px] cursor-not-allowed items-center gap-3 rounded-xl px-3 text-sm text-muted/70', slim && 'justify-center px-0')}><Icon className="h-5 w-5 shrink-0" aria-hidden />{!slim && (label ?? t(key))}</span>)}
           </nav>
           <button onClick={() => setSlim(!slim)} aria-label={slim ? t('admin.expand') : t('admin.collapse')} className="m-2 grid min-h-[44px] place-items-center rounded-xl text-muted hover:bg-surface">{slim ? <ChevronsRight className="h-5 w-5" /> : <ChevronsLeft className="h-5 w-5" />}</button>
         </aside>
