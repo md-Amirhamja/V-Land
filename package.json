@@ -12,7 +12,8 @@
     "test": "NODE_OPTIONS=--no-experimental-webstorage vitest run",
     "test:e2e": "playwright test",
     "gen:geo": "node scripts/gen-geo-units.mjs",
-    "test:rls": "node scripts/test-auth-rls.mjs"
+    "test:rls": "node scripts/test-auth-rls.mjs",
+    "test:engine": "node scripts/test-engine.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
