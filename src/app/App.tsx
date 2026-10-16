@@ -14,6 +14,7 @@ import PortalHome from '@/pages/portal/PortalHome';
 import PortalVerify from '@/pages/portal/PortalVerify';
 import PortalMy from '@/pages/portal/PortalMy';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
+import AdminSandbox from '@/pages/admin/AdminSandbox';
 import LoginPage from '@/pages/LoginPage';
 import VerifyCode from '@/pages/public/VerifyCode';
 import NotFound from '@/pages/NotFound';
@@ -43,6 +44,7 @@ export default function App() {
                     </Route>
                     <Route path="/admin" element={<RequireRole role="admin"><AdminLayout /></RequireRole>}>
                       <Route index element={<AdminDashboard />} />
+                      <Route path="sandbox" element={<AdminSandbox />} />
                       <Route path="*" element={<NotFound />} />
                     </Route>
                     <Route path="*" element={<NotFound />} />
