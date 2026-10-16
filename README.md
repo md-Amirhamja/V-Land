@@ -143,3 +143,9 @@ Patch backups live in `src/` as `*.before-*` files and are git-ignored. Undo a s
 - Count estimate: Microsoft Global ML Building Footprints.
 - Place lookup: OpenStreetMap Nominatim.
 - Maps: Google Maps embed.
+
+## Changes since Round 1
+- Round 2: 25+ table schema with row-level security; 20-rule verdict engine in SQL; 15 scripted scenarios; signed certificates with change detection; hash-chained audit log; synthetic data (about 2,400 plots); `npm run test:engine`.
+- Round 3 (partial): citizen check wizard with certificate issue.
+- Round 4 (partial): audited admin functions and an admin console; `npm run test:admin`, `npm run audit:rls`, `npm run scan:secrets`, `npm run demo:tamper`.
+- Round 5 (partial): report-only Content-Security-Policy and security headers; PRIVACY, QA-PREP, DEMO_SCRIPT and CONCEPT_NOTE docs.

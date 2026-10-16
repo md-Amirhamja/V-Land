@@ -15,7 +15,8 @@
     "test:rls": "node scripts/test-auth-rls.mjs",
     "test:engine": "node scripts/test-engine.mjs",
     "audit:rls": "node scripts/audit-rls.mjs",
-    "test:admin": "node scripts/test-admin.mjs"
+    "test:admin": "node scripts/test-admin.mjs",
+    "demo:tamper": "node scripts/demo-tamper.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

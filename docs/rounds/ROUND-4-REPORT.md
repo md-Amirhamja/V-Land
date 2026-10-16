@@ -1,0 +1,3 @@
+# Round 4 report (partial)
+Built: 020_admin.sql (freeze, release, add case, file and decide mutation, revoke report, update rule with typed confirmation for blockers, resolve ticket, signal status, fraud detection for double sale, rapid transfers and registration-mutation gap, stats, audit verify, reset demo); 016_hardening.sql; admin console pages (records, fraud, inbox, rules, reports, audit, system); scripts/test-admin.mjs; scripts/audit-rls.mjs; scripts/secret-scan.mjs; scripts/demo-tamper.mjs.
+Not built: Rule Studio simulator and rollback, zone drawing, CSV import, dashboard charts, seller-probing, check-spike and cross-survey detectors, Playwright flows from plan 4.8.
