@@ -13,3 +13,6 @@
 | Design system | Colour tokens + small components. Verdicts always use an icon and a word, not just colour. | `src/app/styles/index.css`, `src/app/components/ui/*` | *Why two reds?* `#F42A41` fails the 4.5:1 text-contrast rule on white, so it is used for fills/icons; text uses a darker red. |
 
 Suggested split: **Student A** - map bridge, geo seed, language. **Student B** - auth, RLS, design system. Both should be able to run `npm run build` and `npm test` and read the SQL.
+
+## Round 2: data and engine
+The database holds all verification logic. The browser calls functions, never land tables. evaluate_plot runs the 20 rules in risk_rules and returns a verdict. The 15 SCN plots are the test suite. reset_demo_data() restores them from a snapshot. Sample judge question: why can an anonymous visitor not read plots? Answer: row level security is on and only functions are exposed.
