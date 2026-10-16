@@ -13,11 +13,12 @@
     "test:e2e": "playwright test",
     "gen:geo": "node scripts/gen-geo-units.mjs",
     "test:rls": "node scripts/test-auth-rls.mjs",
-    "test:engine": "node scripts/test-engine.mjs",
+    "test:engine": "supabase db query --linked 'delete from public.reports' && node scripts/test-engine.mjs",
     "audit:rls": "node scripts/audit-rls.mjs",
     "test:admin": "node scripts/test-admin.mjs",
     "demo:tamper": "node scripts/demo-tamper.mjs",
-    "scan:secrets": "node scripts/secret-scan.mjs"
+    "scan:secrets": "node scripts/secret-scan.mjs",
+    "test:all": "npm run audit:rls && npm run scan:secrets && npm run test:admin && npm run test:engine && npm run typecheck && npm run lint && npm test && npx playwright test --workers=1"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

@@ -5,7 +5,9 @@ const q = (sql) => {
   const j = JSON.parse(o); return j.rows ?? j;
 };
 const verify = () => {
-  const r = q("select public.audit_verify() as r");
+  const r = q(`with x as (select id, actor, action, entity, entity_id, diff, created_at, prev_hash, hash, lag(hash) over (order by id) as ph from public.audit_log),
+y as (select id, (prev_hash = coalesce(ph, repeat('0',64)) and hash = encode(extensions.digest(coalesce(ph, repeat('0',64)) || '|' || id || '|' || coalesce(actor::text,'') || '|' || action || '|' || entity || '|' || coalesce(entity_id,'') || '|' || diff::text || '|' || to_char(created_at at time zone 'utc','YYYY-MM-DD"T"HH24:MI:SS.US'), 'sha256'), 'hex')) as ok from x)
+select jsonb_build_object('intact', coalesce(bool_and(ok), true), 'broken_at', min(id) filter (where not ok), 'entries', count(*)) as r from y`);
   return JSON.stringify(r[0].r);
 };
 const target = q('select id from public.audit_log order by id desc limit 1')[0]?.id;
