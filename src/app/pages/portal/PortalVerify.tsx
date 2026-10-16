@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 
-type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
+type Any = any;
 const bn = () => (localStorage.getItem('lang') ?? 'bn') === 'bn';
 const tx = (b: string, e: string) => (bn() ? b : e);
 const COLORS: Record<string, string> = { clear: 'bg-green-700', caution: 'bg-amber-600', stop: 'bg-red-600' };
