@@ -13,7 +13,8 @@
     "test:e2e": "playwright test",
     "gen:geo": "node scripts/gen-geo-units.mjs",
     "test:rls": "node scripts/test-auth-rls.mjs",
-    "test:engine": "node scripts/test-engine.mjs"
+    "test:engine": "node scripts/test-engine.mjs",
+    "audit:rls": "node scripts/audit-rls.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
