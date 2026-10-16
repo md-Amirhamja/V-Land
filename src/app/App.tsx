@@ -12,6 +12,7 @@ import { SetupScreen } from '@/components/SetupScreen';
 import { FullPageSpinner } from '@/components/ui/core';
 import PortalHome from '@/pages/portal/PortalHome';
 import PortalVerify from '@/pages/portal/PortalVerify';
+import PortalDossier from '@/pages/portal/PortalDossier';
 import PortalMy from '@/pages/portal/PortalMy';
 import PortalCheck from '@/pages/portal/PortalCheck';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
@@ -40,6 +41,7 @@ export default function App() {
                     <Route path="/portal" element={<PortalLayout />}>
                       <Route index element={<PortalHome />} />
                       <Route path="verify" element={<PortalVerify />} />
+                      <Route path="plot/:id" element={<PortalDossier />} />
                       <Route path="check" element={<PortalCheck />} />
                       <Route path="my" element={<RequireRole role="citizen"><PortalMy /></RequireRole>} />
                       {UiGallery && <Route path="_ui" element={<UiGallery />} />}

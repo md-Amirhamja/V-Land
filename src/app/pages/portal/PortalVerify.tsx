@@ -124,6 +124,7 @@ export default function PortalVerify() {
           {L(x, 'detail') && <p>{L(x, 'detail')}</p>}
           {L(x, 'advice') && <p className="text-muted">→ {L(x, 'advice')}</p>}</div>)}
         {steps.length > 0 && <div><h3 className="text-sm font-semibold">{tx('পরবর্তী করণীয়', 'Next steps')}</h3><ul className="list-disc pl-5 text-sm">{steps.map((x, i) => <li key={i}>{L(x, '') || x.bn || x.en || JSON.stringify(x)}</li>)}</ul></div>}
+        {signed && plot && <Link className="inline-block text-sm underline" to={`/portal/plot/${plot.plot_id ?? plot.id}`}>{tx('পূর্ণ ডসিয়ার দেখুন', 'Open full dossier')}</Link>}
         {signed && <button className={btn} disabled={busy} onClick={issue}>{tx('সনদ নিন', 'Get certified report')}</button>}
         {code && <p className="text-sm">{tx('কোড', 'Code')}: <b>{code}</b> · <Link className="underline" to={`/verify/${code}`}>{tx('যাচাই পাতা', 'Public check page')}</Link></p>}
         <details><summary className="cursor-pointer text-xs text-muted">raw</summary><pre className="max-h-72 overflow-auto text-xs">{JSON.stringify(res, null, 2)}</pre></details>
