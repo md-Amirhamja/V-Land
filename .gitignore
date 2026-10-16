@@ -21,7 +21,6 @@ test-results
 **/.DS_Store
 *.bak
 *.BLOOD-WORKING
-=======
 # large local data (too big for GitHub)
 public/buildings/dhaka-west.json
 # local backups from patching
