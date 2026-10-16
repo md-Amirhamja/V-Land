@@ -14,7 +14,8 @@
     "gen:geo": "node scripts/gen-geo-units.mjs",
     "test:rls": "node scripts/test-auth-rls.mjs",
     "test:engine": "node scripts/test-engine.mjs",
-    "audit:rls": "node scripts/audit-rls.mjs"
+    "audit:rls": "node scripts/audit-rls.mjs",
+    "test:admin": "node scripts/test-admin.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
