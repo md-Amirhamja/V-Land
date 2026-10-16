@@ -20,7 +20,7 @@ for (const r of q("select tablename, policyname, qual from pg_policies where sch
 
 for (const r of q("select tablename from pg_tables where schemaname='public' and not rowsecurity")) fail(`RLS off: ${r.tablename}`);
 
-for (const r of q("select p.proname from pg_proc p where p.pronamespace='public'::regnamespace and (left(p.proname,6)='admin_' or p.proname in ('run_fraud_detection','reset_demo_data','audit_write','audit_verify')) and has_function_privilege('anon', p.oid, 'execute')"))
+for (const r of q("select p.proname from pg_proc p where p.pronamespace='public'::regnamespace and (left(p.proname,6)='admin_' or p.proname in ('run_fraud_detection','reset_demo_data','audit_write','audit_verify','plot_dossier')) and has_function_privilege('anon', p.oid, 'execute')"))
   fail(`anon can execute ${r.proname}`);
 for (const r of q("select p.proname from pg_proc p where p.pronamespace='private'::regnamespace and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"))
   fail(`private function exposed: ${r.proname}`);

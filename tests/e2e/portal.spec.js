@@ -31,10 +31,10 @@ test('admin login works and lands on the dashboard', async ({ page }) => {
 
 test('each portal rejects the other account', async ({ page }) => {
   await login(page, '/admin/login', CITIZEN);
-  await expect(page.getByRole('alert')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByRole('alert')).toBeVisible();
   await expect(page).toHaveURL(/\/admin\/login/);
   await login(page, '/portal/login', ADMIN);
-  await expect(page.getByRole('alert')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByRole('alert')).toBeVisible();
   await expect(page).toHaveURL(/\/portal\/login/);
 });
 

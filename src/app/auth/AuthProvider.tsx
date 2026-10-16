@@ -27,11 +27,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(supabaseConfigured);
   const lastUid = useRef<string | null>(null);
+  const ready = useRef(false);
 
   // 1) session from storage + live changes (never await Supabase calls inside the callback)
   useEffect(() => {
     if (!supabaseConfigured) return;
-    supabase.auth.getSession().then(({ data }) => { setSession(data.session); if (!data.session) setLoading(false); });
+    supabase.auth.getSession().then(({ data }) => { ready.current = true; setSession(data.session); if (!data.session) setLoading(false); });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => sub.subscription.unsubscribe();
   }, []);
@@ -39,9 +40,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 2) profile follows the signed-in user
   useEffect(() => {
     const uid = session?.user.id ?? null;
-    if (uid === lastUid.current && (profile || !uid)) return;
+    if (uid === lastUid.current && (profile || !uid)) { if (uid || ready.current) setLoading(false); return; }
     lastUid.current = uid;
-    if (!uid) { setProfile(null); return; }
+    if (!uid) { setProfile(null); setLoading(false); return; }
     let alive = true;
     setLoading(true);
     fetchProfile(uid).then((p) => { if (alive) { setProfile(p); setLoading(false); } });
