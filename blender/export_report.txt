@@ -1,0 +1,120 @@
+IGNORED in Bangladesh collection: Mymensingh_old_patch
+IGNORED in Bangladesh collection: Dhaka_old_backup
+IGNORED in Bangladesh collection: Mymensingh_old_backup
+Divisions found (8): ['Barisal', 'Chittagong', 'Dhaka', 'Khulna', 'Mymensingh', 'Rajshahi', 'Rangpur', 'Sylhet']
+Divisions missing: []
+Districts found: 64 (expected 64)
+Areas found: 546
+Aligning the area map with the district map...
+  anchors (Sadar areas): 60 usable of 60
+  anchor fit: 60 inliers, median residual 0.4437 of map span 17.9624
+Areas on a district border (low confidence, purity < 0.6): 75
+   Uttara -> Dhaka / Dhaka  (0.55)
+   Tarail -> Dhaka / Kishoreganj  (0.55)
+   Sundarganj -> Rangpur / Gaibandha  (0.55)
+   Sonagazi -> Chittagong / Chittagong  (0.53)
+   Shalikha -> Khulna / Magura  (0.57)
+   Shahrasti -> Chittagong / Chandpur  (0.57)
+   Senbagh -> Chittagong / Feni  (0.58)
+   Sarishabari -> Dhaka / Tangail  (0.55)
+   Rupsa -> Khulna / Bagerhat  (0.52)
+   Rangunia -> Chittagong / Chittagong  (0.52)
+   Ramgati -> Chittagong / Noakhali  (0.57)
+   Rajoir -> Dhaka / Madaripur  (0.52)
+   Rajnagar -> Sylhet / Maulvibazar  (0.57)
+   Rajasthali -> Chittagong / Bandarban  (0.57)
+   Rajarhat -> Rangpur / Lalmonirhat  (0.57)
+   Pakundia -> Dhaka / Kishoreganj  (0.57)
+   Nasirnagar -> Sylhet / Habiganj  (0.58)
+   Nangalkot -> Chittagong / Comilla  (0.38)
+   Nalchity -> Barisal / Jhalokati  (0.55)
+   Nakla -> Mymensingh / Sherpur  (0.50)
+   Naikhongchhari -> Chittagong / Cox_Bazar  (0.57)
+   Nagarpur -> Dhaka / Manikganj  (0.55)
+   Nachole -> Rajshahi / Nawabganj  (0.58)
+   Nabiganj -> Sylhet / Habiganj  (0.58)
+   Muksudpur -> Dhaka / Gopalganj  (0.50)
+   Mollahat -> Khulna / Bagerhat  (0.52)
+   Mohammadpur_Magura -> Khulna / Magura  (0.48)
+   Mirzapur -> Dhaka / Gazipur  (0.42)
+   Mathbaria -> Barisal / Pirojpur  (0.45)
+   Manikchhari -> Chittagong / Khagrachhari  (0.57)
+   Lohajang -> Dhaka / Munshiganj  (0.57)
+   Lohagara_Chittagong -> Chittagong / Chittagong  (0.53)
+   Lalpur -> Rajshahi / Natore  (0.58)
+   Lakshmichhari -> Chittagong / Khagrachhari  (0.50)
+   Koyra -> Khulna / Bagerhat  (0.55)
+   Khoksa -> Khulna / Kushtia  (0.47)
+   Khaliajuri -> Mymensingh / Netrakona  (0.43)
+   Keshabpur -> Khulna / Jessore  (0.42)
+   Kendua -> Mymensingh / Mymensingh  (0.45)
+   Kaunia -> Rangpur / Rangpur  (0.57)
+--- areas per district ---
+Barisal / Barisal : 9
+Barisal / Pirojpur : 8
+Barisal / Bhola : 7
+Barisal / Jhalokati : 4
+Barisal / Patuakhali : 7
+Barisal / Barguna : 5
+Chittagong / Brahmanbaria : 8
+Chittagong / Comilla : 17
+Chittagong / Chandpur : 6
+Chittagong / Lakshmipur : 4
+Chittagong / Feni : 6
+Chittagong / Noakhali : 10
+Chittagong / Khagrachhari : 7
+Chittagong / Rangamati : 9
+Chittagong / Chittagong : 27
+Chittagong / Bandarban : 8
+Chittagong / Cox_Bazar : 9
+Dhaka / Tangail : 11
+Dhaka / Gazipur : 6
+Dhaka / Kishoreganj : 13
+Dhaka / Narsingdi : 7
+Dhaka / Manikganj : 8
+Dhaka / Dhaka : 45
+Dhaka / Narayanganj : 7
+Dhaka / Munshiganj : 6
+Dhaka / Rajbari : 4
+Dhaka / Faridpur : 9
+Dhaka / Shariatpur : 6
+Dhaka / Madaripur : 4
+Dhaka / Gopalganj : 5
+Khulna / Kushtia : 6
+Khulna / Meherpur : 3
+Khulna / Chuadanga : 3
+Khulna / Jhenaidah : 7
+Khulna / Magura : 4
+Khulna / Jessore : 8
+Khulna / Narail : 3
+Khulna / Khulna : 12
+Khulna / Bagerhat : 11
+Khulna / Satkhira : 7
+Mymensingh / Jamalpur : 6
+Mymensingh / Sherpur : 5
+Mymensingh / Mymensingh : 13
+Mymensingh / Netrakona : 9
+Rajshahi / Naogaon : 11
+Rajshahi / Joypurhat : 5
+Rajshahi / Bogra : 12
+Rajshahi / Nawabganj : 5
+Rajshahi / Rajshahi : 13
+Rajshahi / Natore : 6
+Rajshahi / Sirajganj : 9
+Rajshahi / Pabna : 9
+Rangpur / Panchagarh : 5
+Rangpur / Thakurgaon : 5
+Rangpur / Dinajpur : 13
+Rangpur / Nilphamari : 7
+Rangpur / Lalmonirhat : 6
+Rangpur / Rangpur : 7
+Rangpur / Kurigram : 8
+Rangpur / Gaibandha : 7
+Sylhet / Sunamganj : 11
+Sylhet / Sylhet : 13
+Sylhet / Habiganj : 9
+Sylhet / Maulvibazar : 6
+Districts with 0 areas: 0
+saved /Users/amir/Downloads/bangladesh-3d-web/public/models/divisions.glb
+saved /Users/amir/Downloads/bangladesh-3d-web/public/models/districts.glb
+saved /Users/amir/Downloads/bangladesh-3d-web/public/models/areas.glb

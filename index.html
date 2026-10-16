@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>V Land – Bangladesh 3D Map</title>
+  <link rel="icon" href="/logo.png" />
+  <link rel="stylesheet" href="/src/style.css" />
+  <style>
+    #splash { position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 50% 40%, #1d3a2b 0%, #0d1b14 100%); opacity: 1; transition: opacity .35s ease; }
+    #splash.out { opacity: 0; pointer-events: none; }
+    #splash .sp-wrap { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
+    #splash .sp-logo { width: 92px; height: 92px; object-fit: contain; position: relative; z-index: 1; }
+    #splash .sp-track { position: absolute; inset: 0; border-radius: 50%;
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+              mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+      background: rgba(255, 255, 255, 0.10); }
+    #splash .sp-ring { position: absolute; inset: 0; border-radius: 50%;
+      background: conic-gradient(from 0deg, rgba(76, 175, 80, 0) 0%, #43a047 55%, #b9f6ca 100%);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+              mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+      animation: sp-spin 0.5s cubic-bezier(.65, 0, .35, 1) 1 forwards; }
+    @keyframes sp-spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <div class="sp-wrap">
+      <div class="sp-track"></div>
+      <div class="sp-ring"></div>
+      <img class="sp-logo" src="/logo.png" alt="V Land" />
+    </div>
+  </div>
+  <script>
+    setTimeout(function () {
+      var s = document.getElementById('splash');
+      if (!s) return;
+      s.classList.add('out');
+      setTimeout(function () { s.remove(); }, 400);
+    }, 500);
+  </script>
+  <canvas id="c"></canvas>
+
+  <header id="top">
+    <img src="/logo.png" alt="V Land" id="logo" />
+    <nav id="crumbs"></nav>
+  </header>
+
+  <div id="tip"></div>
+  <div id="loading"><div class="spin"></div><span id="loadtxt">Loading 3D map…</span></div>
+  <div id="msg"></div>
+
+  <aside id="tools">
+    <button id="home" title="Home">⌂</button>
+    <button id="back" title="Back">←</button>
+    <hr />
+    <button data-act="rotL" title="Rotate left">⟲</button>
+    <button data-act="rotR" title="Rotate right">⟳</button>
+    <button data-act="tiltU" title="Tilt up">⤒</button>
+    <button data-act="tiltD" title="Tilt down">⤓</button>
+    <hr />
+    <button data-act="panL" title="Move left">◀</button>
+    <button data-act="panR" title="Move right">▶</button>
+    <button data-act="panU" title="Move up">▲</button>
+    <button data-act="panD" title="Move down">▼</button>
+    <hr />
+    <button data-act="zoomIn" title="Zoom in">＋</button>
+    <button data-act="zoomOut" title="Zoom out">－</button>
+    <button data-act="reset" title="Reset view">◎</button>
+  </aside>
+
+  <section id="mapview" hidden>
+    <div class="maphead">
+      <button id="closemap">← Back to 3D map</button>
+      <span id="maptitle"></span>
+      <a id="openg" target="_blank" rel="noopener">Open in Google Maps ↗</a>
+    </div>
+    <iframe id="gmap" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+  </section>
+
+  <script>
+(function () {
+  function show(m) {
+    var l = document.getElementById('loading'), t = document.getElementById('loadtxt');
+    if (!l || l.classList.contains('hide') || !t) return;   // only while the loading screen is up
+    t.textContent = m;
+  }
+  window.addEventListener('error', function (e) {
+    show('Error: ' + (e.message || 'script failed') + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : ''));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    show('Error: ' + ((e.reason && e.reason.message) || e.reason));
+  });
+  try {
+    var c = document.createElement('canvas');
+    if (!(c.getContext('webgl2') || c.getContext('webgl'))) show('WebGL is not supported in this browser. Try Chrome or Safari.');
+  } catch (x) { show('WebGL check failed: ' + x.message); }
+})();
+</script>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

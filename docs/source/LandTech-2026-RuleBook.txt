@@ -1,0 +1,481 @@
+LandTech 2026
+LandTech Innovation Hackathon
+লঁান্ডেটক ইেনােভশন হঁাকাথন
+Land Tech Software for Smart E-Governance in Bangladesh
+স্মাটর্ ই-গভনঁােন্সর জনঁ লঁান্ড েটক সফটওয়ঁার র্
+Track / ট্রঁাক
+Digital Land Records, Verification & Digitization
+িডিজটাল ভূিম েরকডর্, যাচাইকরণ ও িডিজটাইেজশন
+Rule Book
+িনয়মাবিল
+Organized by / আেয়াজেন
+Department of CSE & CSE-TECH, Daffodil International University
+িসএসই িবভাগ ও িসএসই-েটক, ডঁােফািডল ইন্টারনঁাশনাল ইউিনভািসিটর্
+Supported by / সহেযািগতায়
+Department of Law, Daffodil International University
+আইন িবভাগ, ডঁােফািডল ইন্টারনঁাশনাল ইউিনভািসিটর্
+Venue / েভনুঁ
+Round 1: Online (Google Meet) | প্রথম রাউন্ড: অনলাইন (গুগল িমট)
+Final: Knowledge Tower (Library), Daffodil International University
+চূড়ান্ত পব:র্ নেলজ টাওয়ার (লাইেব্রির), ডঁােফািডল ইন্টারনঁাশনাল ইউিনভািসিটর্
+Part A: English | Part B: বাংলা
+
+Contents
+Part A: English 3
+1 About LandTech 2026 3
+2 Event at a Glance 4
+3 Problem Statements 4
+4 Eligibility & Team Composition 5
+5 Registration & Fees 5
+6 Competition Structure & Timeline 5
+7 Project Development Rules 6
+8 Data, Privacy & Security Rules 7
+9 Use of AI Tools 7
+10 Submission Requirements 7
+11 Final Round Presentation 8
+12 Intellectual Property 8
+13 Code of Conduct 8
+14 Disqualification 8
+15 Awards & Recognition 9
+16 General Provisions 9
+17 Contact 9
+পবর্খ: বাংলা 10
+1 লঁান্ডেটক ২০২৬ পিরিচিত 10
+2 এক নজের আেয়াজন 11
+
+3 সমসঁা িববরণী 11
+4 েযাগঁতা ও দল গঠন 12
+5 িনবন্ধন ও িফ 12
+6 প্রিতেযািগতার কাঠােমা ও সময়সূিচ 12
+7 প্রকল্প উন্নয়ন-সংক্রান্ত িনয়ম 13
+8 েডটা, েগাপনীয়তা ও িনরাপত্তা-সংক্রান্ত িনয়ম 14
+9 এআই টুল বঁবহার 14
+10 জমাদােনর প্রেয়াজনীয়তা 14
+11 চূড়ান্ত পেবর্র উপস্থাপনা 15
+12 েমধাস্বত্ব 15
+13 আচরণিবিধ 15
+14 অেযাগঁতা 15
+15 পুরস্কার ও স্বীকৃিত 16
+16 সাধারণ িবধান 16
+17 েযাগােযাগ 16
+
+LandTech 2026 — LandTech Innovation Hackathon Rule Book
+Part A: Rule Book
+1 About LandTech 2026
+1.1 Background
+Land disputes are among the most common civil cases in Bangladesh. Many of them trace back
+to forged deeds, conflicting khatians across survey generations (CS, SA, RS, BS), and records split
+between the sub-registry office (registration) and the AC Land office (mutation). LandTech 2026,
+the LandTech Innovation Hackathon, focuses on Land Tech Software: the foundational tools and
+systems that make land management and e-governance work in production.
+1.2 Track
+Digital Land Records, Verification & Digitization
+Build secure, tamper-proof systems and automated verification tools for land registries, deed
+validation, and ownership transfers. This includes digitizing historical records (Khatian, Porcha, Deeds), preventing fraudulent transfers and double-selling, cryptographic validation, automated e-Mutation processing, and smart registry workflows.
+1.3 Expected Outcomes
+• High-quality projects.
+• Industry-relevant innovations.
+• Strong student engagement.
+• Ideas that can be implemented countrywide.
+2 Event at a Glance
+3
+
+LandTech 2026 — LandTech Innovation Hackathon Rule Book
+Event LandTech 2026 — LandTech Innovation Hackathon
+Event date To be announced
+Track Digital Land Records, Verification & Digitization
+Total rounds 2 (Round 1: Online Preliminary; Round 2: Final)
+Team 4 members: 2 students + 2 mentors (1 faculty, 1 industry)
+Eligibility DIU students and DIU alumni
+Registration deadline October 06, 2026
+Round 1 submission deadline October 16, 2026
+Final Round To be announced (selected teams only)
+Registration fee (Round 1) 200 BDT per team
+Confirmation fee (Final
+Round)
+100 BDT per selected team, within 3 days of the announcement
+Payment bKash or Rocket; all fees are non-refundable
+Registration, submission &
+tracking
+the LandTech Hackathon Platform
+(landtech.diu.edu.bd/landtech)
+Round 1 location Online (Google Meet)
+Final Round location Knowledge Tower (Library), Daffodil International University
+3 Problem Statements
+Each team must work on one of the following problem statements under the track and state it in
+the concept note.
+P1 — Historical Record Digitization
+Convert scanned Khatian, Porcha, and Deed documents (handwritten and printed Bangla) into
+structured, searchable data using Bangla OCR, data extraction, and validation.
+P2 — Deed & Ownership Verification
+Make land documents instantly verifiable using QR codes, digital signatures, hashing, or distributed
+ledgers, so that a forged or altered copy is detected immediately.
+P3 — Fraud & Double-Selling Detection
+Detect forged documents, the same plot sold to multiple buyers, suspicious rapid transfers, and
+mismatches between registration and mutation records.
+P4 — Smart e-Mutation & Registry Workflow
+Automate and link the flow from deed registration to mutation, with automated checks, status
+tracking, and reduced manual intervention.
+P5 — Citizen Pre-Purchase Verification
+A “check before you buy” tool that lets citizens verify ownership, mutation history, pending cases,
+and khas or acquisition status of a plot before a transaction.
+4
+
+LandTech 2026 — LandTech Innovation Hackathon Rule Book
+P6 — Open Innovation
+Any other idea that clearly fits the track, subject to acceptance by the organizers in Round 1.
+4 Eligibility & Team Composition
+1. The hackathon is open to current students and alumni of Daffodil International University
+(DIU) only. Student members must provide a valid DIU student ID or proof of DIU alumni
+status.
+2. Each team consists of 4 members:
+• 2 students (current DIU students or DIU alumni), one of whom is the Team Leader;
+• 1 faculty mentor; and
+• 1 industry mentor (a professional working in industry).
+3. A student may be a member of only one team.
+4. Mentors guide the team on the problem, design, and industry practice. The project must be
+built by the student members, and the student members must present it.
+5. Team composition may not change after registration closes, except with written approval of the
+organizers.
+5 Registration & Fees
+1. Teams register through the LandTech Hackathon Platform (landtech.diu.edu.bd/landtech) by
+October 06, 2026.
+2. The Team Leader submits the team name, details of both students and both mentors, DIU ID or
+alumni proof, and the chosen problem statement.
+3. Registration fee (Round 1): 200 BDT per team, paid via bKash or Rocket at the time of registration.
+4. Confirmation fee (Final Round): 100 BDT per team, payable only by teams selected for the
+Final Round, within 3 days of the announcement of selected teams.
+5. All fees are paid via bKash or Rocket and are non-refundable.
+6. Registration is complete only after payment is verified and a confirmation is sent by the organizers.
+7. All registration, submission, and status tracking is done on the LandTech Hackathon Platform.
+8. Providing false information leads to disqualification at any stage.
+6 Competition Structure & Timeline
+6.1 Round 1: Online Preliminary Round
+1. Teams prepare their projects before the event, based on the track.
+5
+
+LandTech 2026 — LandTech Innovation Hackathon Rule Book
+2. Teams submit their project along with a concept note on the LandTech Hackathon Platform by
+October 16, 2026.
+3. Any online briefing, clarification, or interaction in Round 1 is conducted via Google Meet.
+4. Submissions are evaluated by the judging panel using the Round 1 criteria in the separate Judging Rubric.
+5. Up to 25 teams (expected) are selected for the Final Round. Selected teams will be announced
+on the LandTech Hackathon Platform.
+6. Selected teams must confirm participation by paying the confirmation fee within 3 days of the
+announcement. If a team does not confirm, the organizers may invite the next-ranked team.
+6.2 Round 2: Final Round
+1. Held at Knowledge Tower (Library), Daffodil International University. The date will be announced soon on the LandTech Hackathon Platform. Only selected teams are invited.
+2. Teams may improve their Round 1 project before the Final Round and present the latest version.
+3. Both student members must attend in person. Mentors are encouraged to attend.
+4. Teams present and demonstrate their project live before the judging panel. The detailed schedule will be shared with finalists in advance.
+5. Final results are announced, and prizes awarded, on the Final Round day.
+6.3 Timeline
+Milestone Date Mode
+Registration deadline October 06, 2026 Online
+Round 1 submission deadline October 16, 2026 Online
+Announcement of selected teams To be announced Online
+Confirmation fee deadline Within 3 days of the announcementOnline
+Final Round To be announced On-site
+Final results & prize-giving Final Round day On-site
+The organizers may revise dates with prior notice to all registered teams.
+7 Project Development Rules
+1. Projects are developed before the event and must be the original work of the team.
+2. Open-source libraries, frameworks, APIs, and public datasets are allowed, provided licences
+are respected and sources are credited in the README.
+3. Copying another person’s or team’s project, in whole or in part, without credit is plagiarism
+and leads to disqualification.
+6
+
+LandTech 2026 — LandTech Innovation Hackathon Rule Book
+4. The project repository must be maintained with its commit history. The organizers may review
+the history to verify authorship.
+5. Changes made between Round 1 and the Final Round must be summarized in the README.
+8 Data, Privacy & Security Rules
+These rules are strict. Any violation results in immediate disqualification and may be reported to the relevant authorities.
+1. Teams must use synthetic (dummy) data they create themselves, any sample data provided by
+the organizers, or clearly public open data.
+2. Real personal data — names, NID numbers, phone numbers, addresses, or actual land records
+of real individuals — must not be collected, used, or displayed.
+3. Scraping, automated querying, or bulk downloading from any government portal is prohibited.
+4. Security testing, penetration testing, or any attempt to access a live government or third-party
+system is strictly prohibited. Security features must be demonstrated only on the team’s own
+prototype.
+5. Any real document used for demonstration must be fully anonymized and approved by the
+organizers in advance.
+9 Use of AI Tools
+1. AI coding assistants and large language models may be used.
+2. All AI tools used must be disclosed in the README, with a short note on how they were used.
+3. Both student members must be able to explain the submitted code and design. Judges may ask
+either student technical questions; inability to explain the solution will affect scoring.
+10 Submission Requirements
+10.1 Round 1 Submission
+Submitted through the LandTech Hackathon Platform (landtech.diu.edu.bd/landtech) by October
+16, 2026:
+1. Concept note (maximum 4 pages, PDF) covering the problem statement chosen, the problem in
+the Bangladesh context, the proposed solution, system architecture and tech stack, key features,
+the plan for countrywide implementation, and team and mentor details.
+2. Project repository link (GitHub/GitLab), public or shared with the organizers, with a README
+covering setup instructions, data sources, and AI tool disclosure.
+3. Demo video, maximum 3 minutes.
+4. Live deployment link (recommended, not mandatory).
+7
+
+LandTech 2026 — LandTech Innovation Hackathon Rule Book
+10.2 Final Round Submission
+Before the Final Round presentation, each selected team submits on the LandTech Hackathon Platform:
+1. The updated repository link, with the README summarizing changes since Round 1.
+2. A pitch deck in PDF, maximum 10 slides.
+Late submissions will not be accepted.
+11 Final Round Presentation
+1. Each team gets 5 minutes for pitch and live demo, followed by 3 minutes of Q&A.
+2. Presentations may be delivered in Bangla or English.
+3. Both student members must present. Mentors may not present or answer judges’ questions on
+the team’s behalf.
+4. Presentation order will be decided by lottery.
+5. Evaluation follows the separate Judging Rubric document published by the organizers.
+12 Intellectual Property
+1. Teams retain full ownership of their projects.
+2. By participating, teams grant the organizers a non-exclusive, royalty-free right to publish team
+names, project descriptions, screenshots, and videos for promotional and reporting purposes.
+3. Teams are encouraged to release their code under an open-source licence.
+4. Any pilot, incubation, or government adoption opportunity will be governed by a separate
+agreement between the team and the relevant party.
+13 Code of Conduct
+1. Treat all participants, mentors, judges, volunteers, and organizers with respect.
+2. Harassment, discrimination, or intimidation of any kind will not be tolerated.
+3. Do not interfere with, copy, or sabotage the work of other teams.
+4. Follow venue rules, library rules, safety instructions, and organizers’ directions.
+5. Plagiarism of code, designs, or ideas is prohibited.
+14 Disqualification
+A team may be disqualified at any stage for:
+• False information during registration, including eligibility;
+8
+
+LandTech 2026 — LandTech Innovation Hackathon Rule Book
+• Plagiarism or submitting another party’s work as its own;
+• Violation of the data, privacy, or security rules (Section 8);
+• Misconduct or violation of the Code of Conduct;
+• Missing a submission deadline;
+• Unapproved change of team members;
+• Failure to pay the required fee.
+15 Awards & Recognition
+Award Prize money & recognition
+Champion BDT 20,000 and certificates
+1st Runner-up BDT 10,000 and certificates
+2nd Runner-up BDT 5,000 and certificates
+All participants Certificate of participation
+Winning teams may be considered for mentorship, incubation, or pilot opportunities, subject to the
+discretion of the relevant authorities.
+16 General Provisions
+1. The decision of the judging panel is final and binding.
+2. The organizers reserve the right to amend these rules with prior notice to all teams.
+3. Any dispute regarding the interpretation of these rules will be settled by the organizing committee.
+4. By registering, participants agree to abide by this Rule Book.
+17 Contact
+Email: csetech@diu.edu.bd Phone: +880 1756-808027
+9
+
+লঁান্ডেটক ২০২৬ — লঁান্ডেটক ইেনােভশন হঁাকাথন িনয়মাবিল
+পবর্খ: িনয়মাবিল
+1 লঁান্ডেটক ২০২৬ পিরিচিত
+1.1 েপ্রক্ষাপট
+বাংলােদেশ েদওয়ািন মামলার একিট বড় অংশই ভূিম-সংক্রান্ত িবেরাধ। এসব িবেরােধর মূেল প্রায়ই থােক জাল দিলল, িবিভন্ন জিরেপর
+(িসএস, এসএ, আরএস, িবএস) খিতয়ােনর মেধঁ অসামঞ্জসঁ, এবং সাব-েরিজস্ট্রি অিফস (িনবন্ধন) ও সহকারী কিমশনার (ভূিম)
+অিফেসর (নামজাির) মেধঁ িবিচ্ছন্ন েরকডর্। লঁান্ডেটক ২০২৬ (লঁান্ডেটক ইেনােভশন হঁাকাথন) এর মূল লক্ষঁ লঁান্ড েটক সফটওয়ঁার:
+এমন েমৗিলক টুল ও িসেস্টম, যা ভূিম বঁবস্থাপনা ও ই-গভনঁান্সেক বাস্তেব কায র্ কর কের েতােল। র্
+1.2 ট্রঁাক
+িডিজটাল ভূিম েরকডর্, যাচাইকরণ ও িডিজটাইেজশন
+ভূিম িনবন্ধন, দিলল যাচাই ও মািলকানা হস্তান্তেরর জনঁ িনরাপদ, জািলয়ািত-প্রিতেরাধী িসেস্টম এবং স্বয়ংিক্রয় যাচাইকরণ টুল ৈতির
+করুন। এর মেধঁ রেয়েছ পুেরােনা েরকডর্ (খিতয়ান, পচর্া, দিলল) িডিজটাইেজশন, প্রতারণামূলক হস্তান্তর ও একই জিম একািধকবার
+িবিক্র প্রিতেরাধ, িক্রেপ্টাগ্রািফক যাচাই, স্বয়ংিক্রয় ই-নামজাির প্রিক্রয়া এবং স্মাটর্ িনবন্ধন কমপ্রবাহ। র্
+1.3 প্রতঁািশত ফলাফল
+• উচ্চমােনর প্রকল্প।
+• িশল্পখাত-প্রাসিঙ্গক উদ্ভাবন।
+• িশক্ষাথীর্েদর সিক্রয় অংশগ্রহণ।
+• েদশবঁাপী বাস্তবায়নেযাগঁ আইিডয়া।
+2 এক নজের আেয়াজন
+10
+
+লঁান্ডেটক ২০২৬ — লঁান্ডেটক ইেনােভশন হঁাকাথন িনয়মাবিল
+আেয়াজন লঁান্ডেটক ২০২৬ — লঁান্ডেটক ইেনােভশন হঁাকাথন
+আেয়াজেনর তািরখ শীঘ্রই েঘাষণা করা হেব
+ট্রঁাক িডিজটাল ভূিম েরকডর্, যাচাইকরণ ও িডিজটাইেজশন
+েমাট রাউন্ড ২িট (প্রথম রাউন্ড: অনলাইন প্রাথিমক পব;র্ িদ্বতীয় রাউন্ড: চূড়ান্ত পব)র্
+দল ৪ জন সদসঁ: ২ জন িশক্ষাথীর্ + ২ জন েমন্টর (১ জন িশক্ষক, ১ জন ইন্ডাস্ট্রি)
+েযাগঁতা ডঁােফািডল ইন্টারনঁাশনাল ইউিনভািসিটর িশক্ষাথীর্ ও প্রাক্তন িশক্ষাথীর্ র্
+িনবন্ধেনর েশষ তািরখ ০৬ অেক্টাবর ২০২৬
+প্রথম রাউেন্ড জমাদােনর েশষ তািরখ ১৬ অেক্টাবর ২০২৬
+চূড়ান্ত পবর্ শীঘ্রই েঘাষণা করা হেব (েকবল িনবািচত দল র্ )
+িনবন্ধন িফ (প্রথম রাউন্ড) দলপ্রিত ২০০ টাকা
+িনিশ্চতকরণ িফ (চূড়ান্ত পব)র্ িনবািচত দলপ্রিত ১০০ টাকা র্ , েঘাষণার ৩ িদেনর মেধঁ
+পিরেশাধ িবকাশ বা রেকট; সকল িফ অেফরতেযাগঁ
+িনবন্ধন, জমা ও অগ্রগিত অনুসরণ লঁান্ডেটক হঁাকাথন প্লঁাটফমর্(landtech.diu.edu.bd/landtech)
+প্রথম রাউেন্ডর স্থান অনলাইন (গুগল িমট)
+চূড়ান্ত পেবর স্থান র্ নেলজ টাওয়ার (লাইেব্রির), ডঁােফািডল ইন্টারনঁাশনাল ইউিনভািসিটর্
+3 সমসঁা িববরণী
+প্রিতিট দলেক ট্রঁােকর অধীেন িনেচর েযেকােনা একিট সমসঁা িববরণী িনেয় কাজ করেত হেব এবং কনেসপ্ট েনােট তা উেল্লখ করেত
+হেব।
+P1 — পুেরােনা েরকডর্ িডিজটাইেজশন
+বাংলা ওিসআর, তথঁ িনষ্কাশন ও যাচাইেয়র মাধঁেম স্কঁান করা খিতয়ান, পচর্া ও দিলল (হােত েলখা ও মুিদ্রত বাংলা) কাঠােমাবদ্ধ ও
+অনুসন্ধানেযাগঁ েডটায় রূপান্তর।
+P2 — দিলল ও মািলকানা যাচাই
+িকউআর েকাড, িডিজটাল স্বাক্ষর, হঁািশং বা িডস্ট্রিিবউেটড েলজার বঁবহার কের ভূিম-দিলল তাৎক্ষিণকভােব যাচাইেযাগঁ করা, যােত জাল
+বা পিরবিতত কিপ সেঙ্গ সেঙ্গ ধরা পেড়।
+P3 — জািলয়ািত ও একািধকবার িবিক্র শনাক্তকরণ
+জাল দিলল, একই জিম একািধক েক্রতার কােছ িবিক্র, সেন্দহজনক দ্রুত হস্তান্তর এবং িনবন্ধন ও নামজাির েরকেডর্র অিমল শনাক্ত করা।
+P4 — স্মাটর্ ই-নামজাির ও িনবন্ধন কমর্প্রবাহ
+দিলল িনবন্ধন েথেক নামজাির পযন্ত প্রিক্রয়ােক স্বয়ংিক্রয় ও সংয র্ ুক্ত করা, েযখােন থাকেব স্বয়ংিক্রয় যাচাই, অবস্থা অনুসরণ এবং নূঁনতম
+হােত-কলেম হস্তেক্ষপ।
+P5 — ক্রেয়র আেগ নাগিরক যাচাই
+“েকনার আেগ যাচাই করুন” ধরেনর টুল, যার মাধঁেম নাগিরক েলনেদেনর আেগ জিমর মািলকানা, নামজািরর ইিতহাস, চলমান মামলা
+এবং খাস বা অিধগ্রহণ অবস্থা যাচাই করেত পারেবন।
+P6 — উন্মুক্ত উদ্ভাবন
+ট্রঁােকর সেঙ্গ স্পষ্টভােব সামঞ্জসঁপূণর্অনঁ েযেকােনা আইিডয়া, যা প্রথম রাউেন্ড আেয়াজকেদর গ্রহণ সােপেক্ষ িবেবিচত হেব।
+11
+
+লঁান্ডেটক ২০২৬ — লঁান্ডেটক ইেনােভশন হঁাকাথন িনয়মাবিল
+4 েযাগঁতা ও দল গঠন
+1. এই হঁাকাথন েকবল ডঁােফািডল ইন্টারনঁাশনাল ইউিনভািসর্িটর (িডআইইউ) বতর্মান িশক্ষাথীর্ ও প্রাক্তন িশক্ষাথীর্েদর জনঁ
+উন্মুক্ত। িশক্ষাথীর্ সদসঁেদর ৈবধ িডআইইউ িশক্ষাথীর্ পিরচয়পত্র অথবা প্রাক্তন িশক্ষাথীর্ হওয়ার প্রমাণ িদেত হেব।
+2. প্রিতিট দেল থাকেবন ৪ জন সদসঁ:
+• ২ জন িশক্ষাথীর্ (িডআইইউ-এর বতর্মান বা প্রাক্তন িশক্ষাথীর্), যােদর একজন দলেনতা;
+• ১ জন িশক্ষক েমন্টর; এবং
+• ১ জন ইন্ডাস্ট্রি েমন্টর (িশল্পখােত কমরত একজন েপশাজীবী র্ )।
+3. একজন িশক্ষাথীর্ শুধুএকিট দেলর সদসঁ হেত পারেবন।
+4. েমন্টরগণ সমসঁা, িডজাইন ও ইন্ডাস্ট্রি চচর্া িবষেয় দলেক িদকিনেদর্শনা েদেবন। প্রকল্পিট িশক্ষাথীর্ সদসঁেদরই ৈতির করেত হেব এবং
+তঁােদরই উপস্থাপন করেত হেব।
+5. িনবন্ধন বন্ধ হওয়ার পর আেয়াজকেদর িলিখত অনুেমাদন ছাড়া দেলর সদসঁ পিরবতর্ন করা যােব না।
+5 িনবন্ধন ও িফ
+1. দলগুেলােক ০৬ অেক্টাবর ২০২৬-এর মেধঁ লঁান্ডেটক হঁাকাথন প্লঁাটফমর্(landtech.diu.edu.bd/landtech) এর মাধঁেম
+িনবন্ধন করেত হেব।
+2. দলেনতা দেলর নাম, দুই িশক্ষাথীর্ ও দুই েমন্টেরর তথঁ, িডআইইউ পিরচয়পত্র বা প্রাক্তন িশক্ষাথীর্ হওয়ার প্রমাণ এবং িনবািচত সমসঁা র্
+িববরণী জমা েদেবন।
+3. িনবন্ধন িফ (প্রথম রাউন্ড): দলপ্রিত ২০০ টাকা, িনবন্ধেনর সময় িবকাশ বা রেকট এর মাধঁেম পিরেশাধেযাগঁ।
+4. িনিশ্চতকরণ িফ (চূড়ান্ত পবর্): দলপ্রিত ১০০ টাকা, েকবল চূড়ান্ত পেবর্িনবািচত দলগুেলা িনব র্ ািচত দেলর তািলকা েঘাষণার ৩ র্
+িদেনর মেধঁ পিরেশাধ করেব।
+5. সকল িফ িবকাশ বা রেকট এর মাধঁেম পিরেশাধেযাগঁ এবং অেফরতেযাগঁ।
+6. িফ পিরেশাধ যাচাই এবং আেয়াজকেদর িনিশ্চতকরণ পাওয়ার পরই িনবন্ধন সম্পন্ন বেল গণঁ হেব।
+7. িনবন্ধন, জমাদান ও অগ্রগিত অনুসরেণর সকল কাযক্রম লঁান্ডেটক হঁাকাথন প্লঁাটফম র্ -র্এ সম্পন্ন হেব।
+8. েযেকােনা পযােয় িমথঁা তথঁ প্রদান প্রমািণত হেল দল অেযাগঁ েঘািষত হেব। র্
+6 প্রিতেযািগতার কাঠােমা ও সময়সূিচ
+6.1 প্রথম রাউন্ড: অনলাইন প্রাথিমক পবর্
+1. দলগুেলা ট্রঁােকর িভিত্তেত আেয়াজেনর আেগই তােদর প্রকল্প প্রস্তুত করেব।
+2. দলগুেলা ১৬ অেক্টাবর ২০২৬-এর মেধঁ লঁান্ডেটক হঁাকাথন প্লঁাটফম-র্এ প্রকল্প ও একিট কনেসপ্ট েনাট জমা েদেব।
+3. প্রথম রাউেন্ডর েযেকােনা অনলাইন িব্রিফং, বঁাখঁা বা েযাগােযাগ গুগল িমেটর মাধঁেম পিরচািলত হেব।
+4. িবচারক পঁােনল পৃথক মূলঁায়ন রুিব্রেকর প্রথম রাউেন্ডর মানদণ্ড অনুযায়ী জমাগুেলা মূলঁায়ন করেব।
+5. চূড়ান্ত পেবর জনঁ সেব র্ াচ্চ ২৫িট দল র্ (প্রতঁািশত) িনবািচত হেব। িনব র্ ািচত দেলর তািলকা লঁান্ডেটক হঁাকাথন প্লঁাটফম র্ -র্এ েঘাষণা
+করা হেব।
+12
+
+লঁান্ডেটক ২০২৬ — লঁান্ডেটক ইেনােভশন হঁাকাথন িনয়মাবিল
+6. িনবািচত দলগুেলােক তািলকা েঘাষণার ৩ িদেনর মেধঁ িনিশ্চতকরণ িফ পিরেশাধ কের অংশগ্রহণ িনিশ্চত করেত হেব। েকােনা দল র্
+িনিশ্চত না করেল আেয়াজকগণ পরবতীর্ অবস্থােনর দলেক আমন্ত্রণ জানােত পারেবন।
+6.2 িদ্বতীয় রাউন্ড: চূড়ান্ত পবর্
+1. চূড়ান্ত পবর্অনুিষ্ঠত হেব নেলজ টাওয়ার (লাইেব্রির), ডঁােফািডল ইন্টারনঁাশনাল ইউিনভািসর্িট-এ; তািরখ শীঘ্রই লঁান্ডেটক
+হঁাকাথন প্লঁাটফম-র্এ েঘাষণা করা হেব। েকবল িনবািচত দলগুেলা আমিন্ত্রত হেব। র্
+2. দলগুেলা চূড়ান্ত পেবর আেগ প্রথম রাউেন্ডর প্রকল্প আরও উন্নত করেত পারেব এবং সব র্ েশষ সংস্করণ উপস্থাপন করেব। র্
+3. দুই িশক্ষাথীর্ সদসঁেকই সশরীের উপিস্থত থাকেত হেব। েমন্টরেদর উপিস্থিত উৎসািহত করা হয়।
+4. দলগুেলা িবচারক পঁােনেলর সামেন সরাসির প্রকল্প উপস্থাপন ও প্রদশর্ন করেব। িবস্তািরত সময়সূিচ ফাইনািলস্টেদর আেগই জানােনা
+হেব।
+5. চূড়ান্ত পেবর িদেনই চ র্ ূড়ান্ত ফলাফল েঘাষণা ও পুরস্কার প্রদান করা হেব।
+6.3 সময়সূিচ
+ধাপ তািরখ মাধঁম
+িনবন্ধেনর েশষ তািরখ ০৬ অেক্টাবর ২০২৬ অনলাইন
+প্রথম রাউেন্ড জমাদােনর েশষ তািরখ ১৬ অেক্টাবর ২০২৬ অনলাইন
+িনবািচত দেলর তািলকা েঘাষণা র্ শীঘ্রই েঘাষণা করা হেব অনলাইন
+িনিশ্চতকরণ িফ পিরেশােধর েশষ তািরখ েঘাষণার ৩ িদেনর মেধঁ অনলাইন
+চূড়ান্ত পবর্ শীঘ্রই েঘাষণা করা হেব সশরীের
+চূড়ান্ত ফলাফল ও পুরস্কার িবতরণ চূড়ান্ত পেবর িদন র্ সশরীের
+আেয়াজকগণ পূবেঘাষণা সােপেক্ষ সময়স র্ ূিচ পিরবতর্ন করেত পারেবন।
+7 প্রকল্প উন্নয়ন-সংক্রান্ত িনয়ম
+1. প্রকল্প আেয়াজেনর আেগই ৈতির করা হেব এবং তা অবশঁই দেলর েমৗিলক কাজ হেত হেব।
+2. লাইেসেন্সর শতর্েমেন এবং README-েত উৎস উেল্লখ কের ওেপন-েসাসর্লাইেব্রির, েফ্রমওয়াকর্, এিপআই ও উন্মুক্ত েডটােসট
+বঁবহার করা যােব।
+3. কৃিতত্ব না িদেয় অনঁ েকােনা বঁিক্ত বা দেলর প্রকল্প আংিশক বা সম্পূণর্অনুিলিপ করা েপ্লিজয়ািরজম িহেসেব গণঁ হেব এবং দল
+অেযাগঁ েঘািষত হেব।
+4. প্রকেল্পর িরেপািজটির কিমট ইিতহাসসহ সংরক্ষণ করেত হেব। মািলকানা যাচাইেয়র জনঁ আেয়াজকগণ এই ইিতহাস পযােলাচনা র্
+করেত পােরন।
+5. প্রথম রাউন্ড ও চূড়ান্ত পেবর মেধঁ করা পিরবত র্ র্নগুেলা README-েত সংেক্ষেপ উেল্লখ করেত হেব।
+8 েডটা, েগাপনীয়তা ও িনরাপত্তা-সংক্রান্ত িনয়ম
+13
+
+লঁান্ডেটক ২০২৬ — লঁান্ডেটক ইেনােভশন হঁাকাথন িনয়মাবিল
+এই িনয়মগুেলা কেঠারভােব প্রেযাজঁ। েযেকােনা লঙ্ঘেন দল তাৎক্ষিণকভােব অেযাগঁ েঘািষত হেব এবং প্রেয়াজেন সংিশ্লষ্ট
+কতর্ৃপক্ষেক অবিহত করা হেত পাের।
+1. দলগুেলা িনেজেদর ৈতির কৃিত্রম (ডািম) েডটা, আেয়াজকেদর সরবরাহ করা নমুনা েডটা অথবা স্পষ্টভােব উন্মুক্ত পাবিলক েডটা
+বঁবহার করেব।
+2. প্রকৃত বঁিক্তগত তথঁ — বাস্তব বঁিক্তর নাম, এনআইিড নম্বর, েফান নম্বর, িঠকানা বা প্রকৃত ভূিম েরকডর্— সংগ্রহ, বঁবহার বা প্রদশর্ন
+করা যােব না।
+3. েকােনা সরকাির েপাটর্াল েথেক স্ক্রঁািপং, স্বয়ংিক্রয় অনুসন্ধান বা বাল্ক ডাউনেলাড িনিষদ্ধ।
+4. েকােনা চালুসরকাির বা তৃতীয় পেক্ষর িসেস্টেম িনরাপত্তা পরীক্ষা, েপিনেট্রশন েটস্টিং বা প্রেবেশর েযেকােনা েচষ্টা কেঠারভােব
+িনিষদ্ধ। িনরাপত্তা-সংক্রান্ত িফচার েকবল দেলর িনজস্ব েপ্রােটাটাইেপ প্রদশর্ন করেত হেব।
+5. প্রদশর্েনর জনঁ েকােনা প্রকৃত নিথ বঁবহার করেত হেল তা সম্পূণর্েবনািম করেত হেব এবং আেগই আেয়াজকেদর অনুেমাদন িনেত
+হেব।
+9 এআই টুল বঁবহার
+1. এআই েকািডং সহকারী ও লাজর্ লঁাঙ্গুেয়জ মেডল বঁবহার করা যােব।
+2. বঁবহৃত সকল এআই টুেলর নাম ও বঁবহােরর ধরন README-েত সংেক্ষেপ উেল্লখ করেত হেব।
+3. জমা েদওয়া েকাড ও িডজাইন দুই িশক্ষাথীর্ সদসঁেকই বঁাখঁা করেত সক্ষম হেত হেব। িবচারকগণ েযেকােনা িশক্ষাথীর্েক কািরগির
+প্রশ্ন করেত পােরন; সমাধান বঁাখঁা করেত না পারেল তা নম্বের প্রভাব েফলেব।
+10 জমাদােনর প্রেয়াজনীয়তা
+10.1 প্রথম রাউেন্ডর জমা
+১৬ অেক্টাবর ২০২৬-এর মেধঁ লঁান্ডেটক হঁাকাথন প্লঁাটফমর্(landtech.diu.edu.bd/landtech) এর মাধঁেম জমা িদেত হেব:
+1. কনেসপ্ট েনাট (সেবাচ্চ ৪ প র্ ৃষ্ঠা, িপিডএফ), েযখােন থাকেব িনবািচত সমসঁা িববরণী র্ , বাংলােদেশর েপ্রক্ষাপেট সমসঁািট, প্রস্তািবত
+সমাধান, িসেস্টম আিকেটকচার ও প্রযুিক্ত, মূল িফচার, েদশবঁাপী বাস্তবায়ন পিরকল্পনা এবং দল ও েমন্টরেদর তথঁ।
+2. প্রকেল্পর িরেপািজটির িলংক (GitHub/GitLab), পাবিলক অথবা আেয়াজকেদর সেঙ্গ েশয়ার করা; README-েত থাকেব
+চালােনার িনেদর্শনা, েডটার উৎস ও এআই টুল বঁবহােরর েঘাষণা।
+3. েডেমা িভিডও, সেবাচ্চ ৩ িমিনট। র্
+4. লাইভ িডপ্লয়েমন্ট িলংক (প্রস্তািবত, বাধঁতামূলক নয়)।
+10.2 চূড়ান্ত পেবর্র জমা
+চূড়ান্ত উপস্থাপনার আেগ প্রিতিট িনবািচত দল লঁান্ডেটক হঁাকাথন প্লঁাটফম র্ -র্এ জমা েদেব:
+1. হালনাগাদ িরেপািজটির িলংক, যার README-েত প্রথম রাউেন্ডর পেরর পিরবতর্নগুেলার সারসংেক্ষপ থাকেব।
+2. িপিডএফ আকাের িপচ েডক, সেবাচ্চ ১০িট স্লাইড। র্
+েদিরেত জমা গ্রহণেযাগঁ হেব না।
+14
+
+লঁান্ডেটক ২০২৬ — লঁান্ডেটক ইেনােভশন হঁাকাথন িনয়মাবিল
+11 চূড়ান্ত পেবর্র উপস্থাপনা
+1. প্রিতিট দল িপচ ও লাইভ েডেমার জনঁ ৫ িমিনট এবং প্রেশ্নাত্তেরর জনঁ ৩ িমিনট সময় পােব।
+2. উপস্থাপনা বাংলা বা ইংেরিজেত করা যােব।
+3. দুই িশক্ষাথীর্ সদসঁেকই উপস্থাপনায় অংশ িনেত হেব। েমন্টরগণ দেলর পেক্ষ উপস্থাপনা করেত বা িবচারকেদর প্রেশ্নর উত্তর িদেত
+পারেবন না।
+4. উপস্থাপনার ক্রম লটািরর মাধঁেম িনধািরত হেব। র্
+5. আেয়াজকেদর প্রকািশত পৃথক মূলঁায়ন রুিব্রক অনুযায়ী মূলঁায়ন করা হেব।
+12 েমধাস্বত্ব
+1. প্রকেল্পর পূণর্মািলকানা দেলর কােছই থাকেব।
+2. অংশগ্রহেণর মাধঁেম দলগুেলা প্রচার ও প্রিতেবদেনর উেদ্দেশঁ দেলর নাম, প্রকেল্পর িববরণ, িস্ক্রনশট ও িভিডও প্রকােশর জনঁ
+আেয়াজকেদর অ-একেচিটয়া ও রয়ঁালিটমুক্ত অিধকার প্রদান কের।
+3. দলগুেলােক ওেপন-েসাসর্লাইেসেন্স েকাড প্রকােশ উৎসািহত করা হয়।
+4. েযেকােনা পাইলট, ইনিকউেবশন বা সরকাির বাস্তবায়েনর সুেযাগ দল ও সংিশ্লষ্ট পেক্ষর মেধঁ পৃথক চুিক্তর মাধঁেম িনধািরত হেব। র্
+13 আচরণিবিধ
+1. সকল অংশগ্রহণকারী, েমন্টর, িবচারক, েস্বচ্ছােসবক ও আেয়াজেকর প্রিত সম্মানজনক আচরণ করেত হেব।
+2. েযেকােনা ধরেনর হয়রািন, ৈবষমঁ বা ভীিত প্রদশর্ন বরদাশত করা হেব না।
+3. অনঁ দেলর কােজ হস্তেক্ষপ, অনুিলিপ বা ক্ষিতসাধন করা যােব না।
+4. েভনুঁ ও লাইেব্রিরর িনয়ম, িনরাপত্তা িনেদর্শনা এবং আেয়াজকেদর িনেদর্শ েমেন চলেত হেব।
+5. েকাড, িডজাইন বা আইিডয়া চুির (েপ্লিজয়ািরজম) িনিষদ্ধ।
+14 অেযাগঁতা
+িনেম্নাক্ত েযেকােনা কারেণ েযেকােনা পযােয় দল অেযাগঁ েঘািষত হেত পাের র্ :
+• িনবন্ধেন, েযাগঁতাসহ, িমথঁা তথঁ প্রদান;
+• েপ্লিজয়ািরজম বা অেনঁর কাজ িনেজর বেল জমা েদওয়া;
+• েডটা, েগাপনীয়তা বা িনরাপত্তা-সংক্রান্ত িনয়ম লঙ্ঘন (অনুেচ্ছদ ৮);
+• অসদাচরণ বা আচরণিবিধ লঙ্ঘন;
+• িনধািরত সমেয়র মেধঁ জমা িদেত বঁথ র্ র্তা;
+• অনুেমাদন ছাড়া দেলর সদসঁ পিরবতর্ন;
+• িনধািরত িফ পিরেশােধ বঁথ র্ র্তা।
+15
+
+লঁান্ডেটক ২০২৬ — লঁান্ডেটক ইেনােভশন হঁাকাথন িনয়মাবিল
+15 পুরস্কার ও স্বীকৃিত
+পুরস্কার পুরস্কােরর অথর্ও স্বীকৃিত
+চঁািম্পয়ন ২০,০০০ টাকা ও সনদ
+প্রথম রানার-আপ ১০,০০০ টাকা ও সনদ
+িদ্বতীয় রানার-আপ ৫,০০০ টাকা ও সনদ
+সকল অংশগ্রহণকারী অংশগ্রহণ সনদ
+িবজয়ী দলগুেলা সংিশ্লষ্ট কতৃর্পেক্ষর িবেবচনা সােপেক্ষ েমন্টরিশপ, ইনিকউেবশন বা পাইলট প্রকেল্পর সুেযাগ েপেত পাের।
+16 সাধারণ িবধান
+1. িবচারক পঁােনেলর িসদ্ধান্তই চূড়ান্ত ও সকেলর জনঁ বাধঁতামূলক।
+2. আেয়াজকগণ সকল দলেক পূবেঘাষণা িদেয় এই িনয়মাবিল সংেশাধেনর অিধকার সংরক্ষণ কেরন। র্
+3. িনয়মাবিলর বঁাখঁা িনেয় েযেকােনা িবেরাধ আেয়াজক কিমিট িনষ্পিত্ত করেব।
+4. িনবন্ধেনর মাধঁেম অংশগ্রহণকারীরা এই িনয়মাবিল েমেন চলেত সম্মত হন।
+17 েযাগােযাগ
+ইেমইল: csetech@diu.edu.bd েফান: +880 1756-808027
+16

@@ -1,0 +1,13 @@
+{
+ "ui.title": "Design system",
+ "ui.buttons": "Buttons",
+ "ui.verdicts": "Verdicts",
+ "ui.findings": "Findings",
+ "ui.timeline": "Timeline",
+ "ui.forms": "Forms",
+ "ui.table": "Table",
+ "ui.sampleFinding": "Seller name does not match the owner",
+ "ui.sampleDetail": "The record shows owner “Rahim Uddin” but the seller gave “Raheem Uddin”.",
+ "ui.sampleAdvice": "Do not pay. Ask for ID and ownership papers.",
+ "ui.sampleCombo": "Pick an upazila"
+}
