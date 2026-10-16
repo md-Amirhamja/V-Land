@@ -34,9 +34,11 @@ describe('portal bridge', () => {
     expect(document.querySelector('#vl-verify')?.textContent).toBe('Verify a Plot');
     expect(sheet().querySelector('#vl-go span')?.textContent).toBe('Verify plots here');
   });
-  it('Escape closes the sheet', () => {
+  it('Escape closes the sheet', async () => {
+    (window as any).__vlandAreaSheet({ key: 'A__B__C', label: 'Test', crumbs: ['A', 'B', 'C'], open: () => undefined });
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
     expect(sheet().classList.contains('open')).toBe(true);
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(sheet().classList.contains('open')).toBe(false);
   });
 });
