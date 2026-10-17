@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLang } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 
 type Any = any;
@@ -10,6 +11,9 @@ const card = 'rounded-2xl border border-line bg-surface2 p-4';
 const Head = ({ cols }: { cols: string[] }) => <thead><tr className="text-xs uppercase text-muted">{cols.map((c) => <th key={c} className="p-2">{c}</th>)}</tr></thead>;
 
 export default function AdminConsole({ tab }: { tab: string }) {
+  const { lang, t } = useLang();
+  const bn = lang === 'bn';
+  const tx = (b: string, e: string) => (bn ? b : e);
   const [rows, setRows] = useState<Any[]>([]);
   const [extra, setExtra] = useState<Any[]>([]);
   const [stats, setStats] = useState<Any>(null);
@@ -71,74 +75,78 @@ export default function AdminConsole({ tab }: { tab: string }) {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold capitalize">{tab}</h1>
+      <h1 className="text-xl font-bold">{tab === 'sandbox' ? 'Sandbox' : t(`admin.${tab}`)}</h1>
+      <p className="rounded-xl border border-line bg-surface p-3 text-sm text-muted">{tx(
+        tab === 'system' ? 'এখান থেকে ডেমো ডেটা রিফ্রেশ বা জালিয়াতি শনাক্ত করুন।' : tab === 'records' ? 'একটি প্লট খুঁজে তার রেকর্ড, পতাকা ও নামজারি দেখুন।' : tab === 'fraud' ? 'সন্দেহজনক সংকেত দেখুন এবং প্রয়োজন হলে প্লট আটকে দিন।' : tab === 'inbox' ? 'নাগরিকের রিপোর্ট পড়ে সমাধান লিখুন।' : tab === 'rules' ? 'ঝুঁকির নিয়ম বদলানোর আগে কারণ লিখুন।' : tab === 'reports' ? 'প্রকাশিত সনদ দেখুন এবং প্রয়োজনে বাতিল করুন।' : tab === 'audit' ? 'অ্যাডমিনের প্রতিটি পরিবর্তনের হিসাব যাচাই করুন।' : 'এই পাতার তথ্য পর্যালোচনা করুন।',
+        tab === 'system' ? 'Refresh demo data or run fraud detection here.' : tab === 'records' ? 'Find a plot to review its records, flags and mutations.' : tab === 'fraud' ? 'Review suspicious signals and freeze a plot when needed.' : tab === 'inbox' ? 'Read citizen reports and record a resolution.' : tab === 'rules' ? 'Write a reason before changing a risk rule.' : tab === 'reports' ? 'Review issued certificates and revoke one when necessary.' : tab === 'audit' ? 'Verify the history of every administrator change.' : 'Review the information on this page.'
+      )}</p>
       {msg && <p role="status" className="break-words rounded-xl border border-line bg-surface p-3 text-sm">{msg}</p>}
 
       {tab === 'system' && <div className="grid gap-3 sm:grid-cols-2">
-        <div className={card}><h2 className="mb-2 font-semibold">Stats</h2><pre className="overflow-auto text-xs">{JSON.stringify(stats, null, 2)}</pre></div>
+        <div className={card}><h2 className="mb-2 font-semibold">{tx('পরিসংখ্যান', 'Stats')}</h2><pre className="overflow-auto text-xs">{JSON.stringify(stats, null, 2)}</pre></div>
         <div className={card + ' space-y-3'}>
-          <button className={btn} onClick={() => act('run_fraud_detection', {}, 'Detection finished')}>Run fraud detection now</button>
+          <button className={btn} onClick={() => act('run_fraud_detection', {}, tx('শনাক্তকরণ শেষ হয়েছে', 'Detection finished'))}>{tx('এখন জালিয়াতি শনাক্ত করুন', 'Run fraud detection now')}</button>
           <div className="flex gap-2">
-            <input className={field} placeholder="type RESET" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
-            <button className={ghost} disabled={confirm !== 'RESET'} onClick={() => { act('admin_reset_demo', {}, 'Demo data restored'); setConfirm(''); }}>Reset demo data</button>
+            <input className={field} aria-label={tx('রিসেট নিশ্চিতকরণ', 'Reset confirmation')} placeholder={tx('রিসেট করতে RESET লিখুন', 'Type RESET to confirm')} value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+            <button className={ghost} disabled={confirm !== 'RESET'} onClick={() => { act('admin_reset_demo', {}, tx('ডেমো ডেটা পুনরুদ্ধার হয়েছে', 'Demo data restored')); setConfirm(''); }}>{tx('ডেমো ডেটা রিসেট করুন', 'Reset demo data')}</button>
           </div>
         </div>
       </div>}
 
-      {tab === 'fraud' && <div className="overflow-x-auto"><table className="w-full text-left text-sm"><Head cols={['id', 'plot', 'type', 'status', 'evidence', 'actions']} />
+      {tab === 'fraud' && <div className="overflow-x-auto"><table className="w-full text-left text-sm"><Head cols={[tx('আইডি', 'id'), tx('প্লট', 'plot'), tx('ধরন', 'type'), tx('অবস্থা', 'status'), tx('প্রমাণ', 'evidence'), tx('করণীয়', 'actions')]} />
         <tbody>{rows.map((r) => <tr key={r.id} className="border-t border-line align-top">
           <td className="p-2">{r.id}</td><td className="p-2">{r.plot_id}</td><td className="p-2">{r.signal_type}</td><td className="p-2">{r.status}</td>
           <td className="max-w-xs break-words p-2 text-xs">{JSON.stringify(r.evidence)}</td>
           <td className="space-x-1 whitespace-nowrap p-2">
-            {['investigating', 'confirmed', 'dismissed'].map((s) => <button key={s} className={ghost} onClick={() => act('admin_set_signal_status', { p_id: r.id, p_status: s }, 'Updated')}>{s}</button>)}
-            <button className={ghost} onClick={() => act('admin_freeze_plot', { p_plot: r.plot_id, p_reason: 'fraud signal ' + r.id }, 'Plot frozen')}>freeze</button>
+            {['investigating', 'confirmed', 'dismissed'].map((s) => <button key={s} className={ghost} onClick={() => act('admin_set_signal_status', { p_id: r.id, p_status: s }, tx('হালনাগাদ হয়েছে', 'Updated'))}>{tx(s === 'investigating' ? 'তদন্ত চলছে' : s === 'confirmed' ? 'নিশ্চিত' : 'বাতিল', s)}</button>)}
+            <button className={ghost} onClick={() => act('admin_freeze_plot', { p_plot: r.plot_id, p_reason: 'fraud signal ' + r.id }, tx('প্লট আটকে রাখা হয়েছে', 'Plot frozen'))}>{tx('প্লট আটকে রাখুন', 'Freeze plot')}</button>
           </td></tr>)}</tbody></table>
-        {rows.length === 0 && <p className="p-3 text-sm text-muted">No signals yet. Run detection from System.</p>}</div>}
+        {rows.length === 0 && <p className="p-3 text-sm text-muted">{tx('এখনো কোনো সংকেত নেই। সিস্টেম থেকে শনাক্তকরণ চালান।', 'No signals yet. Run detection from System.')}</p>}</div>}
 
       {tab === 'inbox' && <div className="space-y-3">
-        {tickets.length === 0 && <p className="text-sm text-muted">No open tickets.</p>}
+        {tickets.length === 0 && <p className="text-sm text-muted">{tx('খোলা কোনো টিকিট নেই।', 'No open tickets.')}</p>}
         {tickets.map((r) => { const k = r.kind + r.id; return (
           <div key={k} className={card + ' space-y-2'}>
             <div className="text-xs text-muted">{r.kind} #{r.id} · plot {r.plot_id} · {r.type}</div>
             <p className="text-sm">{r.message}</p>
-            <div className="flex gap-2"><input className={field + ' flex-1'} placeholder="resolution note" value={note[k] ?? ''} onChange={(e) => setNote({ ...note, [k]: e.target.value })} />
-              <button className={btn} disabled={!note[k]} onClick={() => act('admin_resolve_ticket', { p_kind: r.kind, p_id: r.id, p_resolution: note[k] }, 'Resolved, citizen notified')}>Resolve</button></div>
+            <div className="flex gap-2"><input className={field + ' flex-1'} aria-label={tx('সমাধানের নোট', 'Resolution note')} placeholder={tx('সমাধানের নোট লিখুন', 'Write a resolution note')} value={note[k] ?? ''} onChange={(e) => setNote({ ...note, [k]: e.target.value })} />
+              <button className={btn} disabled={!note[k]} onClick={() => act('admin_resolve_ticket', { p_kind: r.kind, p_id: r.id, p_resolution: note[k] }, tx('সমাধান হয়েছে, নাগরিককে জানানো হয়েছে', 'Resolved, citizen notified'))}>{tx('সমাধান করুন', 'Resolve')}</button></div>
           </div>); })}
       </div>}
 
-      {tab === 'rules' && <div className="overflow-x-auto"><table className="w-full text-left text-sm"><Head cols={['code', 'rule', 'severity', 'on', 'weight', 'reason / confirm', '']} />
+      {tab === 'rules' && <div className="overflow-x-auto"><table className="w-full text-left text-sm"><Head cols={[tx('কোড', 'code'), tx('নিয়ম', 'rule'), tx('গুরুত্ব', 'severity'), tx('চালু', 'on'), tx('ওজন', 'weight'), tx('কারণ/নিশ্চিতকরণ', 'reason / confirm'), '']} />
         <tbody>{rows.map((r) => { const e = ed[r.code] ?? {}; const enabled = e.enabled ?? r.enabled; const weight = e.weight ?? r.weight; return (
           <tr key={r.code} className="border-t border-line align-top">
-            <td className="p-2 font-semibold">{r.code}</td><td className="p-2">{r.title_en}</td><td className="p-2">{r.severity}</td>
+            <td className="p-2 font-semibold">{r.code}</td><td className="p-2">{bn ? r.title_bn : r.title_en}</td><td className="p-2">{r.severity}</td>
             <td className="p-2"><input type="checkbox" checked={enabled} onChange={(x) => setEd({ ...ed, [r.code]: { ...e, enabled: x.target.checked } })} /></td>
             <td className="p-2"><input type="number" className={field + ' w-20'} value={weight} onChange={(x) => setEd({ ...ed, [r.code]: { ...e, weight: x.target.value } })} /></td>
             <td className="space-y-1 p-2">
-              <input className={field} placeholder="reason (required)" value={e.reason ?? ''} onChange={(x) => setEd({ ...ed, [r.code]: { ...e, reason: x.target.value } })} />
-              {BLOCKERS.includes(r.code) && !enabled && <input className={field} placeholder={'type ' + r.code + ' to confirm'} value={e.confirm ?? ''} onChange={(x) => setEd({ ...ed, [r.code]: { ...e, confirm: x.target.value } })} />}
+              <input className={field} aria-label={tx('কারণ', 'Reason')} placeholder={tx('কারণ লিখুন (আবশ্যক)', 'Reason (required)')} value={e.reason ?? ''} onChange={(x) => setEd({ ...ed, [r.code]: { ...e, reason: x.target.value } })} />
+              {BLOCKERS.includes(r.code) && !enabled && <input className={field} aria-label={tx('নিশ্চিতকরণ', 'Confirmation')} placeholder={tx(`${r.code} লিখে নিশ্চিত করুন`, `Type ${r.code} to confirm`)} value={e.confirm ?? ''} onChange={(x) => setEd({ ...ed, [r.code]: { ...e, confirm: x.target.value } })} />}
             </td>
-            <td className="p-2"><button className={btn} disabled={!e.reason} onClick={() => act('admin_update_rule', { p_code: r.code, p_enabled: enabled, p_weight: Number(weight), p_params: r.params, p_reason: e.reason, p_confirm: e.confirm ?? null }, 'Rule saved')}>Save</button></td>
+            <td className="p-2"><button className={btn} disabled={!e.reason} onClick={() => act('admin_update_rule', { p_code: r.code, p_enabled: enabled, p_weight: Number(weight), p_params: r.params, p_reason: e.reason, p_confirm: e.confirm ?? null }, tx('নিয়ম সংরক্ষিত হয়েছে', 'Rule saved'))}>{tx('সংরক্ষণ', 'Save')}</button></td>
           </tr>); })}</tbody></table></div>}
 
-      {tab === 'reports' && <div className="overflow-x-auto"><table className="w-full text-left text-sm"><Head cols={['code', 'issued', 'expires', 'status', 'revoke']} />
+      {tab === 'reports' && <div className="overflow-x-auto"><table className="w-full text-left text-sm"><Head cols={[tx('কোড', 'code'), tx('প্রকাশের তারিখ', 'issued'), tx('মেয়াদ শেষ', 'expires'), tx('অবস্থা', 'status'), tx('বাতিল', 'revoke')]} />
         <tbody>{rows.map((r) => <tr key={r.id} className="border-t border-line align-top">
           <td className="p-2 font-mono">{r.code}</td><td className="p-2">{String(r.issued_at).slice(0, 10)}</td><td className="p-2">{String(r.expires_at).slice(0, 10)}</td>
-          <td className="p-2">{r.revoked ? 'revoked: ' + r.revoked_reason : 'active'}</td>
-          <td className="p-2">{!r.revoked && <div className="flex gap-2"><input className={field} placeholder="reason" value={note[r.code] ?? ''} onChange={(e) => setNote({ ...note, [r.code]: e.target.value })} />
-            <button className={ghost} disabled={!note[r.code]} onClick={() => act('admin_revoke_report', { p_code: r.code, p_reason: note[r.code] }, 'Revoked')}>Revoke</button></div>}</td></tr>)}</tbody></table></div>}
+          <td className="p-2">{r.revoked ? `${tx('বাতিল', 'revoked')}: ${r.revoked_reason}` : tx('সক্রিয়', 'active')}</td>
+          <td className="p-2">{!r.revoked && <div className="flex gap-2"><input className={field} aria-label={tx('বাতিলের কারণ', 'Revocation reason')} placeholder={tx('কারণ লিখুন', 'Reason')} value={note[r.code] ?? ''} onChange={(e) => setNote({ ...note, [r.code]: e.target.value })} />
+            <button className={ghost} disabled={!note[r.code]} onClick={() => act('admin_revoke_report', { p_code: r.code, p_reason: note[r.code] }, tx('বাতিল হয়েছে', 'Revoked'))}>{tx('বাতিল করুন', 'Revoke')}</button></div>}</td></tr>)}</tbody></table></div>}
 
       {tab === 'audit' && <div className="space-y-3">
-        <button className={btn} onClick={() => act('admin_audit_verify', {}, 'Audit chain')}>Verify chain</button>
-        <div className="overflow-x-auto"><table className="w-full text-left text-sm"><Head cols={['id', 'when', 'action', 'entity', 'entity id']} />
+        <button className={btn} onClick={() => act('admin_audit_verify', {}, tx('অডিট চেইন যাচাই হয়েছে', 'Audit chain'))}>{tx('চেইন যাচাই করুন', 'Verify chain')}</button>
+        <div className="overflow-x-auto"><table className="w-full text-left text-sm"><Head cols={[tx('আইডি', 'id'), tx('সময়', 'when'), tx('কাজ', 'action'), tx('সত্তা', 'entity'), tx('সত্তা আইডি', 'entity id')]} />
           <tbody>{rows.map((r) => <tr key={r.id} className="border-t border-line"><td className="p-2">{r.id}</td><td className="p-2">{String(r.created_at).slice(0, 19)}</td><td className="p-2">{r.action}</td><td className="p-2">{r.entity}</td><td className="p-2">{r.entity_id}</td></tr>)}</tbody></table></div>
       </div>}
 
       {tab === 'records' && <div className="space-y-3">
-        <div className="flex gap-2"><input className={field} placeholder="SCN-01 or plot id" value={plotKey} onChange={(e) => setPlotKey(e.target.value)} />
-          <button className={btn} onClick={() => setLookup(plotKey)}>Open plot</button></div>
-        {!plot && <p className="text-sm text-muted">No plot found.</p>}
+        <div className="flex gap-2"><input className={field} aria-label={tx('প্লট খুঁজুন', 'Find plot')} placeholder={tx('SCN-01 বা প্লট আইডি', 'SCN-01 or plot id')} value={plotKey} onChange={(e) => setPlotKey(e.target.value)} />
+          <button className={btn} onClick={() => setLookup(plotKey)}>{tx('প্লট খুলুন', 'Open plot')}</button></div>
+        {!plot && <p className="text-sm text-muted">{tx('কোনো প্লট পাওয়া যায়নি।', 'No plot found.')}</p>}
         {plot && <>
           <div className={card + ' space-y-2'}>
-            <div className="text-sm">Plot {plot.id} · {plot.scenario_code ?? 'ordinary'} · {plot.area_decimal} decimal · {plot.land_class}</div>
+            <div className="text-sm">{tx('প্লট', 'Plot')} {plot.id} · {plot.scenario_code ?? tx('সাধারণ', 'ordinary')} · {plot.area_decimal} {tx('শতাংশ', 'decimal')} · {plot.land_class}</div>
             <div className="flex gap-2"><input className={field + ' flex-1'} placeholder="freeze reason" value={note.freeze ?? ''} onChange={(e) => setNote({ ...note, freeze: e.target.value })} />
               <button className={btn} disabled={!note.freeze} onClick={() => act('admin_freeze_plot', { p_plot: plot.id, p_reason: note.freeze }, 'Plot frozen')}>Freeze plot</button></div>
           </div>

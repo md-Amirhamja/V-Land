@@ -8,14 +8,15 @@ import { DemoRibbon, LanguageToggle } from '@/components/ui/nav';
 
 export function AuthLayout({ kind, children }: { kind: 'citizen' | 'admin'; children: ReactNode }) {
   const { t } = useLang();
-  useTheme(kind === "admin" ? "admin" : "portal");
+  const theme = useTheme(kind === 'admin' ? 'admin' : 'portal');
+  useEffect(() => { if (kind === 'admin' && theme.theme !== 'light') theme.setTheme('light'); }, [kind, theme]);
   useEffect(() => { document.title = `${t(kind === 'admin' ? 'auth.adminTitle' : 'auth.citizenTitle')} · V-Land`; });
   return (
-    <div className={cn('min-h-screen', kind === 'admin' && 'bg-[radial-gradient(ellipse_at_50%_20%,rgb(27_58_43),rgb(15_29_23)_70%)]')}>
+    <div className={cn('min-h-screen bg-bg', kind === 'admin' && 'bg-[radial-gradient(ellipse_at_50%_20%,rgb(236_243_238),rgb(244_248_245)_70%)]')}>
       <DemoRibbon />
       <div className="mx-auto flex max-w-md flex-col gap-6 px-4 py-8">
         <div className="flex items-center justify-between">
-          <Link to={kind === 'admin' ? '/' : '/portal'} className="inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-muted hover:text-ink"><ArrowLeft className="h-4 w-4" aria-hidden />{t('common.back')}</Link>
+          <Link to={kind === 'admin' ? '/portal/login' : '/portal'} className="inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-muted hover:text-ink"><ArrowLeft className="h-4 w-4" aria-hidden />{t('common.back')}</Link>
           <LanguageToggle />
         </div>
         <div className="flex flex-col items-center gap-2 text-center">

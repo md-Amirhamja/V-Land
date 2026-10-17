@@ -23,7 +23,7 @@ function build() {
   if (!top || document.getElementById('vl-actions')) return;
   const box = document.createElement('div'); box.id = 'vl-actions';
   box.innerHTML =
-    `<a class="vl-btn primary" id="vl-verify" href="/portal">${ICON.shield}<span class="vl-label" data-k="verify"></span></a>` +
+    `<a class="vl-btn primary" id="vl-verify" href="/portal/verify">${ICON.shield}<span class="vl-label" data-k="verify"></span></a>` +
     `<div id="vl-signin"><button class="vl-btn" id="vl-signbtn" aria-haspopup="true" aria-expanded="false">${ICON.user}<span class="vl-label" data-k="signin"></span></button>` +
     `<div id="vl-menu" role="menu"><a role="menuitem" href="/portal/login"><b data-k="citizen"></b><small data-k="citizenSub"></small></a>` +
     `<a role="menuitem" href="/admin/login"><b data-k="admin"></b><small data-k="adminSub"></small></a></div></div>`;

@@ -38,7 +38,7 @@ export default function App() {
                     <Route path="/portal/login" element={<LoginPage kind="citizen" />} />
                     <Route path="/admin/login" element={<LoginPage kind="admin" />} />
                     <Route path="/verify/:code" element={<VerifyCode />} />
-                    <Route path="/portal" element={<PortalLayout />}>
+                    <Route path="/portal" element={<RequireRole role="citizen"><PortalLayout /></RequireRole>}>
                       <Route index element={<PortalHome />} />
                       <Route path="verify" element={<PortalVerify />} />
                       <Route path="plot/:id" element={<PortalDossier />} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useLang } from '@/i18n';
 
@@ -7,10 +7,13 @@ const SURVEYS = ['CS', 'SA', 'RS', 'BS', 'DIGITAL'];
 const TONE: Record<string, string> = { clear: 'bg-green-600', caution: 'bg-amber-500', stop: 'bg-red-600' };
 const WORD: Record<string, [string, string, string]> = { clear: ['নিরাপদ', 'CLEAR', '✔'], caution: ['সতর্কতা', 'CAUTION', '⚠'], stop: ['থামুন', 'STOP', '✖'] };
 const inp = 'min-h-[44px] w-full rounded-xl border border-line bg-surface px-3 text-sm';
+const displayLabel = (value: any, fallback: string) => typeof value === 'object' ? value?.bn ?? value?.en ?? fallback : value ?? fallback;
 
 export default function PortalCheck() {
-  useLang();
-  const en = localStorage.getItem('lang') === 'en';
+  const { lang } = useLang();
+  const [searchParams] = useSearchParams();
+  const selectedScenario = searchParams.get('scenario');
+  const en = lang === 'en';
   const tx = (bn: string, e: string) => (en ? e : bn);
   const pick = (o: any, k: string) => o?.[`${k}_${en ? 'en' : 'bn'}`] ?? o?.[k] ?? '';
   const [signed, setSigned] = useState(false);
@@ -50,6 +53,7 @@ export default function PortalCheck() {
   const verdict: string | undefined = ev?.verdict;
   const findings: any[] = ev?.findings ?? ev?.reasons ?? [];
   const w = verdict ? WORD[verdict] : null;
+  const shownScenarios = selectedScenario ? scn.filter((scenario) => scenario.code === selectedScenario) : scn;
 
   return (
     <div className="mx-auto max-w-3xl space-y-5 p-4">
@@ -57,7 +61,7 @@ export default function PortalCheck() {
       <section className="space-y-3 rounded-2xl border border-line bg-surface2 p-4">
         <h2 className="font-semibold">{tx('১. দ্রুত ডেমো (১৫টি দৃশ্যপট)', '1. Quick demo (15 scenarios)')}</h2>
         <div className="flex flex-wrap gap-2">
-          {scn.map((s) => <button key={s.code} onClick={() => run(s.plot_id)} className="min-h-[44px] rounded-xl border border-line px-3 text-sm hover:bg-surface">{s.code}</button>)}
+          {shownScenarios.map((s) => <button key={s.code} onClick={() => run(s.plot_id)} className="min-h-[44px] rounded-xl border border-line px-3 text-sm hover:bg-surface">{s.code}</button>)}
         </div>
       </section>
       <section className="space-y-3 rounded-2xl border border-line bg-surface2 p-4">
@@ -79,7 +83,7 @@ export default function PortalCheck() {
         <button disabled={!f.mouza || !signed || busy} onClick={search} className="min-h-[44px] rounded-xl bg-brand px-4 text-sm font-semibold text-brand-fg disabled:opacity-50">{tx('খুঁজুন', 'Search')}</button>
         {plots && plots.length === 0 && <p className="text-sm">{tx('কোনো প্লট পাওয়া যায়নি। সার্ভে ধরন বদলে দেখুন।', 'No plot found. Try another survey type.')}</p>}
         {plots?.map((p, i) => { const id = p.id ?? p.plot_id; return (
-          <button key={id ?? i} onClick={() => run(id)} className="block min-h-[44px] w-full rounded-xl border border-line px-3 text-left text-sm hover:bg-surface">{p.label ?? `#${id}`}</button>); })}
+          <button key={id ?? i} onClick={() => run(id)} className="block min-h-[44px] w-full rounded-xl border border-line px-3 text-left text-sm hover:bg-surface">{displayLabel(p.label, `#${id}`)}</button>); })}
       </section>
       {busy && <p role="status" className="text-sm">{tx('যাচাই চলছে…', 'Checking…')}</p>}
       {err && <p role="alert" className="rounded-xl bg-red-600/20 p-3 text-sm">{err}</p>}

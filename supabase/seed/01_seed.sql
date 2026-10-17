@@ -127,6 +127,14 @@ select u.gid, nm.en, nm.bn, (100 + nm.m)::text, true
 from nm join up u on u.k = nm.m / 3
 order by nm.m;
 
+-- Give every remaining upazila one synthetic mouza so the geography picker
+-- remains usable outside the four plot-rich demo upazilas.
+insert into mouzas(upazila_id, name_en, name_bn, jl_no, is_synthetic)
+select g.id, g.name_en || ' Mouza', g.name_bn || ' মৌজা', 'AUTO-' || g.id, true
+from geo_units g
+where g.level = 'area'
+  and not exists (select 1 from mouzas m where m.upazila_id = g.id);
+
 -- ---------- 2,400 ordinary plots (12 mouzas x 200, jittered-free grid so neighbours share edges) ----------
 create temp table pl as
 select m, g, (m * 200 + g + 1) as n, (g % 20) as col, (g / 20) as row
@@ -213,6 +221,23 @@ union all
 select pp.id, 'BS'::survey_type, 'BS-' || (500 + pp.n), (pp.n + 5000)::text, p.area_decimal, 'private'::khatian_kind, true from pp join plots p on p.id = pp.id
 union all
 select pp.id, 'CS'::survey_type, 'CS-' || (500 + pp.n), (pp.n + 9000)::text, p.area_decimal, 'private'::khatian_kind, true from pp join plots p on p.id = pp.id where pp.n % 2 = 0;
+
+-- Five browseable RS records for every other upazila-backed mouza.
+insert into plots(mouza_id, area_decimal, land_class, geom, scenario_code, is_synthetic)
+select m.id, 10 + s.n, 'residential'::land_class,
+      st_setsrid(st_makeenvelope((89 + mod(m.id, 1000) * 0.001 + s.n * 0.0001)::double precision,
+                  (22 + mod(m.id, 500) * 0.0002)::double precision,
+                  (89 + mod(m.id, 1000) * 0.001 + s.n * 0.0001 + 0.00005)::double precision,
+                  (22 + mod(m.id, 500) * 0.0002 + 0.00005)::double precision), 4326),
+       'DEMO-MOUZA-' || m.id || '-' || s.n, true
+from mouzas m cross join generate_series(1, 5) s(n)
+where not exists (select 1 from plots p where p.mouza_id = m.id);
+
+insert into survey_records(plot_id, survey_type, khatian_no, dag_no, recorded_area, khatian_kind, is_synthetic)
+select p.id, 'RS'::survey_type, 'RS-' || p.id, 'D-' || p.id, p.area_decimal, 'private'::khatian_kind, true
+from plots p
+where p.scenario_code like 'DEMO-MOUZA-%'
+  and not exists (select 1 from survey_records s where s.plot_id = p.id and s.survey_type = 'RS');
 
 -- ============================================================
 -- The 15 hand-built scenario plots (fixed codes SCN-01 .. SCN-15)

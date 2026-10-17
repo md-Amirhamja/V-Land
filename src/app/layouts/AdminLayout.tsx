@@ -7,6 +7,7 @@ import { useIdleLogout } from '@/auth/useIdleLogout';
 import { useTheme } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 import { DemoRibbon, LanguageToggle, ThemeToggle } from '@/components/ui/nav';
+import { Dialog } from '@/components/ui/overlay';
 
 const ITEMS = [
   { to: '/admin', key: 'admin.dashboard', Icon: LayoutDashboard },
@@ -22,7 +23,7 @@ const ITEMS = [
 
 export function AdminLayout() {
   const { t } = useLang(); const { profile, signOut } = useAuth(); const nav = useNavigate(); const loc = useLocation();
-  const th = useTheme('admin'); const [slim, setSlim] = useState(false); const [menu, setMenu] = useState(false);
+  const th = useTheme('admin'); const [slim, setSlim] = useState(false); const [menu, setMenu] = useState(false); const [confirmLogout, setConfirmLogout] = useState(false);
   useIdleLogout(30);
   const isActive = (to: string) => (to === '/admin' ? loc.pathname === '/admin' : loc.pathname.startsWith(to));
   const current = ITEMS.find((i) => isActive(i.to)) ?? ITEMS[0];
@@ -57,7 +58,7 @@ export function AdminLayout() {
                 </button>
                 {menu && <div role="menu" className="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-line bg-surface p-1 shadow-xl">
                   <div className="px-3 py-2 text-xs text-muted">{t('admin.roleAdmin')}</div>
-                  <button role="menuitem" onClick={async () => { await signOut(); nav('/admin/login'); }} className="flex min-h-[44px] w-full items-center gap-2 rounded-lg px-3 text-sm hover:bg-surface2"><LogOut className="h-4 w-4" aria-hidden />{t('common.signOut')}</button>
+                  <button role="menuitem" aria-label={t('common.signOut')} onClick={() => setConfirmLogout(true)} className="flex min-h-[44px] w-full items-center gap-2 rounded-lg px-3 text-sm hover:bg-surface2"><LogOut className="h-4 w-4" aria-hidden />{t('common.signOut')}</button>
                 </div>}
               </div>
             </div>
@@ -66,6 +67,15 @@ export function AdminLayout() {
           <footer className="border-t border-line px-4 py-3 text-center text-xs text-muted">{t('admin.demoOnly')} · {t('common.disclaimer')}</footer>
         </div>
       </div>
+      <Dialog open={confirmLogout} onClose={() => setConfirmLogout(false)} title={t('common.signOutTitle')}>
+        <div className="space-y-4">
+          <p className="text-sm text-muted">{t('common.signOutConfirm')}</p>
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={() => setConfirmLogout(false)} className="min-h-[44px] rounded-xl border border-line px-4 text-sm font-semibold hover:bg-surface2">{t('common.cancel')}</button>
+            <button type="button" onClick={async () => { setConfirmLogout(false); await signOut(); nav('/admin/login'); }} className="min-h-[44px] rounded-xl bg-stop-solid px-4 text-sm font-semibold text-white">{t('common.signOut')}</button>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

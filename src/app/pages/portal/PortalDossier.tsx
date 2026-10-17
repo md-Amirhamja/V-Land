@@ -17,9 +17,6 @@ interface Dossier {
 }
 type Tab = 'record' | 'deeds' | 'disputes' | 'tax' | 'activity';
 
-const bn = () => (localStorage.getItem('lang') ?? 'bn') === 'bn';
-const tx = (b: string, e: string) => (bn() ? b : e);
-
 function Item({ title, lines }: { title: string; lines: (string | null | undefined | false)[] }) {
   return (
     <div className="rounded-xl border border-line p-3 text-sm">
@@ -28,11 +25,13 @@ function Item({ title, lines }: { title: string; lines: (string | null | undefin
     </div>
   );
 }
-const Empty = () => <p className="text-sm text-muted">{tx('কোনো রেকর্ড নেই।', 'Nothing recorded.')}</p>;
 const H = ({ children }: { children: string }) => <h2 className="pt-2 text-sm font-semibold">{children}</h2>;
 
 export default function PortalDossier() {
-  useLang();
+  const { lang } = useLang();
+  const bn = lang === 'bn';
+  const tx = (b: string, e: string) => (bn ? b : e);
+  const Empty = () => <p className="text-sm text-muted">{tx('কোনো রেকর্ড নেই।', 'Nothing recorded.')}</p>;
   const { id } = useParams();
   const [d, setD] = useState<Dossier | null>(null);
   const [err, setErr] = useState('');
@@ -59,7 +58,7 @@ export default function PortalDossier() {
     ['record', tx('রেকর্ড', 'Record')], ['deeds', tx('দলিল ও নামজারি', 'Deeds')],
     ['disputes', tx('মামলা ও বাধা', 'Disputes')], ['tax', tx('কর', 'Tax')], ['activity', tx('কার্যকলাপ', 'Activity')],
   ];
-  const when = (s: string) => new Date(s).toLocaleString(bn() ? 'bn-BD' : 'en-GB');
+  const when = (s: string) => new Date(s).toLocaleString(bn ? 'bn-BD' : 'en-GB');
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">

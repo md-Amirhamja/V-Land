@@ -19,6 +19,10 @@
     {
       "source": "/verify/:path*",
       "destination": "/app.html"
+    },
+    {
+      "source": "/map",
+      "destination": "/index.html"
     }
   ],
   "headers": [

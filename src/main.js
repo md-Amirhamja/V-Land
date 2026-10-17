@@ -270,6 +270,16 @@ async function goToLevel(l) {      // breadcrumb jump
   path = target; level = l; show(kids); await flyTo(boxOf(kids)); renderCrumbs(); busy = false;
 }
 
+async function focusPath(key) {
+  const target = String(key || '').split('__').filter(Boolean);
+  for (let i = 0; i < target.length; i += 1) {
+    const wanted = target[i].toLowerCase();
+    const mesh = shown.find((m) => lastOf(m).toLowerCase() === wanted);
+    if (!mesh) { toast(lang === 'bn' ? 'এই প্লটের মানচিত্র পাওয়া যায়নি' : 'Map area not found for this plot', 6000); return; }
+    await drill(mesh);
+  }
+}
+
 function back() { if (areaMode) return exitArea(); if (level > 1) goToLevel(level - 1); }
 
 function renderCrumbs() {
@@ -575,6 +585,8 @@ async function startup() {
     await new Promise((r) => idle(r));
     await loadLevel(l, true);
   }
+  const focus = new URLSearchParams(location.search).get('focus');
+  if (focus) await focusPath(focus);
 }
 startup();
 

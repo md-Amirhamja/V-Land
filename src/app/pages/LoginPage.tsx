@@ -14,7 +14,7 @@ export default function LoginPage({ kind }: { kind: Kind }) {
   const { t } = useLang(); const { signIn, signOut, role, loading, session } = useAuth();
   const nav = useNavigate(); const loc = useLocation();
   const st = (loc.state ?? {}) as { from?: string; reason?: 'notAdmin' | 'notCitizen' | 'idle' };
-  const home = kind === 'admin' ? '/admin' : '/portal/my';
+  const home = kind === 'admin' ? '/admin' : '/portal';
   const [email, setEmail] = useState(''); const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(st.reason === 'notAdmin' ? t('auth.errNotAdmin') : st.reason === 'notCitizen' ? t('auth.errNotCitizen') : null);
   const [busy, setBusy] = useState(false);
@@ -39,6 +39,7 @@ export default function LoginPage({ kind }: { kind: Kind }) {
     <AuthLayout kind={kind}>
       <Card className="space-y-4">
         {st.reason === 'idle' && <p role="alert" className="flex gap-2 rounded-xl bg-caution-bg p-3 text-sm text-caution"><TriangleAlert className="h-5 w-5 shrink-0" aria-hidden />{t('auth.idleOut')}</p>}
+        {kind === 'admin' && <div className="rounded-xl border border-line bg-surface2 p-3 text-sm"><p className="font-semibold">{t('auth.adminDemoTitle')}</p><p className="mt-1 text-muted">{t('auth.adminDemoHint')}</p></div>}
         <form onSubmit={submit} className="space-y-4" noValidate>
           <Input label={t('auth.email')} type="email" autoComplete="username" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <Input label={t('auth.password')} type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
